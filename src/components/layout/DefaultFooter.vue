@@ -182,6 +182,7 @@ export default {
 
     input {
       width: 60%;
+      flex:1;
       background: transparent;
       border: none;
       padding: 12px 16px;
@@ -200,10 +201,10 @@ export default {
     }
 
     button {
+      flex: 0 0 48px;
       background: transparent;
       border: none;
       cursor: pointer;
-      padding: 0 16px;
       display: flex;
       align-items: center;
       justify-content: center;

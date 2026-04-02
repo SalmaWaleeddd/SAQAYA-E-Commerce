@@ -2,7 +2,7 @@
 <template>
   <header class="header">
     <div class="header__container">
-      <div class="header__title">
+      <div class="header__logo">
         <h1>Exclusive</h1>
       </div>
       <nav class="header__nav">
@@ -29,7 +29,7 @@
             @keyup.enter="handleSearch"
           />
           <button @click="handleSearch">
-            <img src="@/assets/icons/search-icon.svg" alt="Search" />
+            <img src="@/assets/icons/layout/search-icon.svg" alt="Search" />
           </button>
         </div>
 
@@ -38,7 +38,7 @@
           <button class="cart-button" @click="openCartSidebar">
             <div class="cart-icon-wrapper">
               <img
-                src="@/assets/icons/cart-icon.svg"
+                src="@/assets/icons/layout/cart-icon.svg"
                 alt="Cart"
                 class="cart-icon"
               />
@@ -97,6 +97,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/variables.scss";
 .header {
   padding: 2rem;
 
@@ -106,9 +107,10 @@ export default {
     align-items: center;
     background-color: #fff;
     border-bottom: 0.5px solid #000;
+    padding-bottom: 1rem;
   }
 
-  &__title {
+  &__logo {
     h1 {
       font-size: 24px;
       font-weight: bold;
@@ -135,7 +137,7 @@ export default {
           transition: all 0.3s ease;
 
           &:hover {
-            color: #db4444;
+            color: $color-primary;
           }
 
           &.active {
@@ -190,7 +192,7 @@ export default {
       }
 
       &:hover {
-        background-color: #db4444;
+        background-color: $color-primary;
       }
     }
   }
@@ -218,7 +220,7 @@ export default {
         position: absolute;
         top: -8px;
         right: -12px;
-        background-color: #db4444;
+        background-color: $color-primary;
         color: white;
         font-size: 11px;
         font-weight: bold;
