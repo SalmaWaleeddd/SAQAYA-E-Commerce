@@ -11,7 +11,7 @@
             <router-link
               :to="item.path"
               active-class="active"
-              exact-active-class="active"
+              exact-active-class="exact-active"
             >
               {{ item.name }}
             </router-link>
@@ -140,7 +140,7 @@ export default {
             color: $color-primary;
           }
 
-          &.active {
+          &.exact-active {
             border-bottom: 1px solid #000;
           }
         }
