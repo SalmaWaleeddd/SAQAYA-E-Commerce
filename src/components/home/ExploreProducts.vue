@@ -11,11 +11,13 @@
 </template>
 
 <script>
+import { SectionHeader } from "@/components/common";
+import { ProductList } from "@/components/product";
 export default {
   name: "ExploreProducts",
   components: {
-    SectionHeader: () => import("@/components/common/SectionHeader.vue"),
-    ProductList: () => import("@/components/product/ProductList.vue"),
+    SectionHeader,
+    ProductList,
     BaseButton: () => import("@/components/ui/BaseButton.vue"),
   },
   props: {

@@ -4,19 +4,24 @@
       <SectionHeader subtitle="Categories" title="Browse By Category" />
     </div>
     <div class="categories__grid">
-      <div v-for="category in categories" :key="category.id" class="categories__grid__item">
+      <div
+        v-for="category in categories"
+        :key="category.id"
+        class="categories__grid__item"
+      >
         <img :src="category.img" :alt="category.name" />
 
         <h3>{{ category.name }}</h3>
       </div>
-      </div>
+    </div>
   </div>
 </template>
 <script>
+import { SectionHeader } from "@/components/common";
 export default {
   name: "ProductCategories",
   components: {
-    SectionHeader: () => import("@/components/common/SectionHeader.vue"),
+    SectionHeader,
   },
   props: {
     categories: {

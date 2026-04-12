@@ -13,12 +13,12 @@
 </template>
 
 <script>
-import ProductList from "../product/ProductList.vue";
-
+import { ProductList } from "@/components/product";
+import { SectionHeader } from "@/components/common";
 export default {
   name: "FlashSales",
   components: {
-    SectionHeader: () => import("@/components/common/SectionHeader.vue"),
+    SectionHeader,
     ProductList,
     BaseButton: () => import("@/components/ui/BaseButton.vue"),
   },
