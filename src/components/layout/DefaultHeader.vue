@@ -3,7 +3,7 @@
   <header class="header">
     <div class="header__container">
       <div class="header__logo">
-        <h1>Exclusive</h1>
+        <h1 class="header__logo__text">Exclusive</h1>
       </div>
       <nav class="header__nav">
         <ul>
@@ -111,7 +111,7 @@ export default {
   }
 
   &__logo {
-    h1 {
+    &__text {
       font-size: 24px;
       font-weight: bold;
       color: #000;

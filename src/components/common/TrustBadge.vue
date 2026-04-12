@@ -4,11 +4,15 @@
       <div class="trust-badge__item">
         <div class="trust-badge__icon-container">
           <div class="trust-badge__icon-background">
-            <img :src="badge.icon" :alt="badge.title" />
+            <img
+              :src="badge.icon"
+              :alt="badge.title"
+              class="trust-badge__icon"
+            />
           </div>
         </div>
-        <h3>{{ badge.title }}</h3>
-        <p>{{ badge.description }}</p>
+        <h3 class="trust-badge__title">{{ badge.title }}</h3>
+        <p class="trust-badge__description">{{ badge.description }}</p>
       </div>
     </div>
   </div>
@@ -57,22 +61,21 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-
-    img {
-      width: 40px;
-      height: 40px;
-      object-fit: contain;
-      border-radius: 50%;
-    }
   }
-  h3 {
+  &__icon {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    border-radius: 50%;
+  }
+  &__title {
     font-size: 20px;
     font-weight: 600;
     margin-top: 1rem;
     margin-bottom: 0.5rem;
     white-space: nowrap;
   }
-  p {
+  &__description {
     font-size: 14px;
     font-weight: 400;
   }

@@ -9,15 +9,15 @@
         :key="category.id"
         class="categories__grid__item"
       >
-        <img :src="category.img" :alt="category.name" />
+        <img :src="category.img" :alt="category.name" class="categories__img" />
 
-        <h3>{{ category.name }}</h3>
+        <h3 class="categories__title">{{ category.name }}</h3>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { SectionHeader } from "@/components/common/SectionHeader.vue";
+import SectionHeader from "@/components/common/SectionHeader.vue";
 export default {
   name: "ProductCategories",
   components: {
@@ -56,20 +56,18 @@ export default {
         background-color: $color-primary;
         color: $color-app-white;
       }
-
-      img {
-        width: 50px;
-        height: 50px;
-        object-fit: contain;
-      }
-
-      h3 {
-        font-size: 16px;
-        font-weight: 400;
-        color: inherit;
-        margin: 0;
-      }
     }
+  }
+  &__img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+  }
+  &__title {
+    font-size: 16px;
+    font-weight: 400;
+    color: inherit;
+    margin: 0;
   }
 }
 </style>

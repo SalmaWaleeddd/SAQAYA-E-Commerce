@@ -13,8 +13,9 @@
               v-model="email"
               placeholder="Enter your email"
               @keyup.enter="handleSubscribe"
+              class="footer__email__input"
             />
-            <button @click="handleSubscribe">
+            <button @click="handleSubscribe" class="footer__email__btn">
               <img src="@/assets/icons/send-icon.svg" alt="Send" />
             </button>
           </div>
@@ -66,22 +67,32 @@
           <div class="footer__app_links">
             <img src="@/assets/images/appStore-img.svg" alt="App Store" />
             <img src="@/assets/images/googlePlay-img.svg" alt="Google Play" />
-            
           </div>
-         
         </div>
         <div class="footer__social-media">
           <a href="https://www.facebook.com" target="_blank" rel="noopener">
-            <img src="@/assets/icons/social-media/facebook-icon.svg" alt="Facebook" />
+            <img
+              src="@/assets/icons/social-media/facebook-icon.svg"
+              alt="Facebook"
+            />
           </a>
           <a href="https://www.twitter.com" target="_blank" rel="noopener">
-            <img src="@/assets/icons/social-media/twitter-icon.svg" alt="Twitter" />
+            <img
+              src="@/assets/icons/social-media/twitter-icon.svg"
+              alt="Twitter"
+            />
           </a>
           <a href="https://www.instagram.com" target="_blank" rel="noopener">
-            <img src="@/assets/icons/social-media/instagram-icon.svg" alt="Instagram" />
+            <img
+              src="@/assets/icons/social-media/instagram-icon.svg"
+              alt="Instagram"
+            />
           </a>
           <a href="https://www.linkedin.com" target="_blank" rel="noopener">
-            <img src="@/assets/icons/social-media/linkedin-icon.svg" alt="LinkedIn" />
+            <img
+              src="@/assets/icons/social-media/linkedin-icon.svg"
+              alt="LinkedIn"
+            />
           </a>
         </div>
       </div>
@@ -126,7 +137,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/styles/variables.scss';
+@import "@/assets/styles/variables.scss";
 .footer {
   background-color: #000;
   color: $color-app-white;
@@ -180,9 +191,9 @@ export default {
     width: 217px;
     box-sizing: border-box;
 
-    input {
+    &__input {
       width: 60%;
-      flex:1;
+      flex: 1;
       background: transparent;
       border: none;
       padding: 12px 16px;
@@ -200,7 +211,7 @@ export default {
       }
     }
 
-    button {
+    &__btn {
       flex: 0 0 48px;
       background: transparent;
       border: none;
@@ -219,7 +230,7 @@ export default {
   &__col-info {
     font-weight: 400;
     font-size: 16px;
-    margin:0;
+    margin: 0;
   }
 
   &__links {
@@ -256,7 +267,7 @@ export default {
     justify-content: center;
     gap: 12px;
 
-    img{
+    img {
       cursor: pointer;
     }
   }

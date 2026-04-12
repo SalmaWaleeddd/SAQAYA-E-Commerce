@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import { SectionHeader } from "@/components/common/SectionHeader.vue";
-import { ProductList } from "@/components/product/ProductList.vue";
+import  SectionHeader  from "@/components/common/SectionHeader.vue";
+import  ProductList  from "@/components/product/ProductList.vue";
 import  BaseButton  from "@/components/ui/BaseButton.vue";
 export default {
   name: "ExploreProducts",

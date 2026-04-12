@@ -20,7 +20,8 @@
           {{ promotion.subtitle }}
         </p>
       </div>
-      <button class="promotion-banner__content__button">Shop Now
+      <button class="promotion-banner__content__button">
+        Shop Now
         <img src="@/assets/icons/arrow-right-icon.svg" alt="Arrow Right" />
       </button>
     </div>
@@ -44,16 +45,6 @@ export default {
       required: true,
     },
   },
-
-  data() {
-    return {};
-  },
-
-  computed: {},
-
-  methods: {},
-
-  watch: {},
 };
 </script>
 
