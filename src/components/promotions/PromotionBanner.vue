@@ -1,26 +1,26 @@
 <template>
-  <div class="promotion__banner">
-    <div class="promotion__banner__content">
-      <div class="promotion__banner__content__text">
-        <div class="promotion__banner__content__text__title_container">
+  <div class="promotion-banner">
+    <div class="promotion-banner__content">
+      <div class="promotion-banner__content__text">
+        <div class="promotion-banner__content__text__title_container">
           <img
             v-if="promotion.icon"
             :src="promotion.icon"
             alt="Promotion Icon"
-            class="promotion__banner__content__icon"
+            class="promotion-banner__content__icon"
           />
-          <h2 class="promotion__banner__content__text__title">
+          <h2 class="promotion-banner__content__text__title">
             {{ promotion.title }}
           </h2>
         </div>
         <p
           v-if="promotion.subtitle"
-          class="promotion__banner__content__text__subtitle"
+          class="promotion-banner__content__text__subtitle"
         >
           {{ promotion.subtitle }}
         </p>
       </div>
-      <button class="promotion__banner__content__button">Shop Now
+      <button class="promotion-banner__content__button">Shop Now
         <img src="@/assets/icons/arrow-right-icon.svg" alt="Arrow Right" />
       </button>
     </div>
@@ -28,7 +28,7 @@
       v-if="promotion.img"
       :src="promotion.img"
       alt="Promotion Image"
-      class="promotion__banner__image"
+      class="promotion-banner__image"
     />
   </div>
 </template>
@@ -59,7 +59,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/styles/variables.scss";
-.promotion__banner {
+.promotion-banner {
   display: flex;
   align-items: center;
   gap: 7rem;

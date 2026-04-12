@@ -17,7 +17,7 @@
   </div>
 </template>
 <script>
-import { SectionHeader } from "@/components/common";
+import { SectionHeader } from "@/components/common/SectionHeader.vue";
 export default {
   name: "ProductCategories",
   components: {

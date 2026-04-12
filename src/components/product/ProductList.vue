@@ -12,12 +12,13 @@
 
 <script lang="ts">
 import { Product } from "@/types/product";
+import ProductCard from "./ProductCard.vue";
 import { PropType } from "vue";
 
 export default {
   name: "ProductList",
   components: {
-    ProductCard: () => import("@/components/product/ProductCard.vue"),
+    ProductCard,
   },
   props: {
     products: {

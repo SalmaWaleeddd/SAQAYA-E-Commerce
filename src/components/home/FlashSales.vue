@@ -13,14 +13,15 @@
 </template>
 
 <script>
-import { ProductList } from "@/components/product";
-import { SectionHeader } from "@/components/common";
+import { ProductList } from "@/components/product/ProductList.vue";
+import { SectionHeader } from "@/components/common/SectionHeader.vue";
+import BaseButton from "@/components/ui/BaseButton.vue";
 export default {
   name: "FlashSales",
   components: {
     SectionHeader,
     ProductList,
-    BaseButton: () => import("@/components/ui/BaseButton.vue"),
+    BaseButton,
   },
   props: {
     products: {

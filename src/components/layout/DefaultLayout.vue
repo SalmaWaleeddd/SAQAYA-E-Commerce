@@ -1,34 +1,36 @@
 <template>
   <div class="layout">
     <app-header @open-cart-sidebar="handleCartSidebar" />
-    
+
     <main class="layout__main">
       <div class="layout__container">
+        <BreadCrumb />
         <slot />
       </div>
     </main>
-    
+
     <app-footer />
   </div>
 </template>
 
 <script>
-import DefaultHeader from './DefaultHeader.vue';
-import DefaultFooter from './DefaultFooter.vue';
+import DefaultHeader from "./DefaultHeader.vue";
+import DefaultFooter from "./DefaultFooter.vue";
 
 export default {
-  name: 'DefaultLayout',
-  
+  name: "DefaultLayout",
+
   components: {
-    'app-header': DefaultHeader,
-    'app-footer': DefaultFooter
+    "app-header": DefaultHeader,
+    "app-footer": DefaultFooter,
+    BreadCrumb: () => import("@/components/common/BreadCrumb.vue"),
   },
 
   methods: {
     handleCartSidebar() {
-      this.$emit('open-cart-sidebar');
-    }
-  }
+      this.$emit("open-cart-sidebar");
+    },
+  },
 };
 </script>
 
@@ -54,7 +56,7 @@ export default {
   .layout__main {
     padding: 32px 0;
   }
-  
+
   .layout__container {
     padding: 0 16px;
   }
