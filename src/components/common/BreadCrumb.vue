@@ -67,6 +67,10 @@ export default {
     },
 
     formatName(segment) {
+      if (segment === "404-error") {
+        return "404 Error";
+      }
+
       let name = segment.replace(/-/g, " ");
       name = name.charAt(0).toUpperCase() + name.slice(1);
       return name;
