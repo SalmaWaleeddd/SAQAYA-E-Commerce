@@ -1,4 +1,3 @@
-<!-- DefaultFooter.vue -->
 <template>
   <footer class="footer">
     <div class="footer__container">
@@ -35,21 +34,18 @@
       <div class="footer__column">
         <h3 class="footer__title">Account</h3>
         <ul class="footer__links">
-          <li><router-link to="/account">My Account</router-link></li>
-          <li><router-link to="/login">Login / Register</router-link></li>
-          <li><router-link to="/cart">Cart</router-link></li>
-          <li><router-link to="/wishlist">Wishlist</router-link></li>
-          <li><router-link to="/shop">Shop</router-link></li>
+          <li v-for="link in accountLinks" :key="link.to">
+            <router-link :to="link.to">{{ link.text }}</router-link>
+          </li>
         </ul>
       </div>
 
       <div class="footer__column">
         <h3 class="footer__title">Quick Link</h3>
         <ul class="footer__links">
-          <li><router-link to="/privacy">Privacy Policy</router-link></li>
-          <li><router-link to="/terms">Terms Of Use</router-link></li>
-          <li><router-link to="/faq">FAQ</router-link></li>
-          <li><router-link to="/contact">Contact</router-link></li>
+          <li v-for="link in quickLinks" :key="link.to">
+            <router-link :to="link.to">{{ link.text }}</router-link>
+          </li>
         </ul>
       </div>
 
@@ -106,12 +102,15 @@
 </template>
 
 <script>
+import { ACCOUNT_LINKS, QUICK_LINKS } from "@/constants/layout";
 export default {
   name: "DefaultFooter",
 
   data() {
     return {
       email: "",
+      accountLinks: ACCOUNT_LINKS,
+      quickLinks: QUICK_LINKS,
     };
   },
 

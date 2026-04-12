@@ -54,16 +54,14 @@
 </template>
 
 <script>
+import { NAV_ITEMS } from '@/constants/layout';
+
 export default {
   name: "DefaultHeader",
 
   data() {
     return {
-      navItems: [
-        { name: "Home", path: "/" },
-        { name: "Contact", path: "/contact" },
-        { name: "About", path: "/about" },
-      ],
+      navItems: NAV_ITEMS,
       searchQuery: "",
     };
   },
