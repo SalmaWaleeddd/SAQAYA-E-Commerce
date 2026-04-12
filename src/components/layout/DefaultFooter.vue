@@ -60,7 +60,7 @@
               class="qr-code-image"
             />
           </div>
-          <div class="footer__app_links">
+          <div class="footer__app-links">
             <img src="@/assets/images/appStore-img.svg" alt="App Store" />
             <img src="@/assets/images/googlePlay-img.svg" alt="Google Play" />
           </div>
@@ -319,6 +319,11 @@ export default {
       padding: 0 20px;
       gap: 32px;
     }
+      &__app-links{
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
   }
 }
 
@@ -340,6 +345,11 @@ export default {
 
     &__links {
       align-items: center;
+    }
+    &__app-links{
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
   }
 }

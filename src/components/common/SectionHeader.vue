@@ -1,8 +1,10 @@
 <template>
   <div class="section-header">
-    <div class="section-header__marker"></div>
-    <div class="section-header__content">
+    <div class="section-header__marker-container">
+      <div class="section-header__marker"></div>
       <h3 class="section-header__subtitle">{{ subtitle }}</h3>
+    </div>
+    <div class="section-header__content">
       <h2 class="section-header__title">{{ title }}</h2>
     </div>
   </div>
@@ -28,21 +30,21 @@ export default {
 @import "@/assets/styles/variables.scss";
 .section-header {
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
   gap: 16px;
   margin-bottom: 40px;
+  &__marker-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
 
   &__marker {
     width: 20px;
     height: 40px;
     background: $color-primary;
     border-radius: 4px;
-  }
-
-  &__content {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
   }
 
   &__subtitle {
