@@ -15,7 +15,7 @@
               @keyup.enter="handleSubscribe"
             />
             <button @click="handleSubscribe">
-              <img src="@/assets/icons/layout/send-icon.svg" alt="Send" />
+              <img src="@/assets/icons/send-icon.svg" alt="Send" />
             </button>
           </div>
         </div>
@@ -58,30 +58,30 @@
         <div class="footer__app-buttons">
           <div class="footer__app_qr-code">
             <img
-              src="@/assets/images/layout/qrCode-img.svg"
+              src="@/assets/images/qrCode-img.svg"
               alt="QR Code"
               class="qr-code-image"
             />
           </div>
           <div class="footer__app_links">
-            <img src="@/assets/images/layout/appStore-img.svg" alt="App Store" />
-            <img src="@/assets/images/layout/googlePlay-img.svg" alt="Google Play" />
+            <img src="@/assets/images/appStore-img.svg" alt="App Store" />
+            <img src="@/assets/images/googlePlay-img.svg" alt="Google Play" />
             
           </div>
          
         </div>
         <div class="footer__social-media">
           <a href="https://www.facebook.com" target="_blank" rel="noopener">
-            <img src="@/assets/icons/layout/social-media/facebook-icon.svg" alt="Facebook" />
+            <img src="@/assets/icons/social-media/facebook-icon.svg" alt="Facebook" />
           </a>
           <a href="https://www.twitter.com" target="_blank" rel="noopener">
-            <img src="@/assets/icons/layout/social-media/twitter-icon.svg" alt="Twitter" />
+            <img src="@/assets/icons/social-media/twitter-icon.svg" alt="Twitter" />
           </a>
           <a href="https://www.instagram.com" target="_blank" rel="noopener">
-            <img src="@/assets/icons/layout/social-media/instagram-icon.svg" alt="Instagram" />
+            <img src="@/assets/icons/social-media/instagram-icon.svg" alt="Instagram" />
           </a>
           <a href="https://www.linkedin.com" target="_blank" rel="noopener">
-            <img src="@/assets/icons/layout/social-media/linkedin-icon.svg" alt="LinkedIn" />
+            <img src="@/assets/icons/social-media/linkedin-icon.svg" alt="LinkedIn" />
           </a>
         </div>
       </div>

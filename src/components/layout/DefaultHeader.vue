@@ -29,7 +29,7 @@
             @keyup.enter="handleSearch"
           />
           <button @click="handleSearch">
-            <img src="@/assets/icons/layout/search-icon.svg" alt="Search" />
+            <img src="@/assets/icons/search-icon.svg" alt="Search" />
           </button>
         </div>
 
@@ -38,7 +38,7 @@
           <button class="cart-button" @click="openCartSidebar">
             <div class="cart-icon-wrapper">
               <img
-                src="@/assets/icons/layout/cart-icon.svg"
+                src="@/assets/icons/cart-icon.svg"
                 alt="Cart"
                 class="cart-icon"
               />
