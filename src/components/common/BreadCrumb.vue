@@ -84,7 +84,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/styles/variables.scss";
 .bread-crumb {
   display: flex;
   align-items: center;

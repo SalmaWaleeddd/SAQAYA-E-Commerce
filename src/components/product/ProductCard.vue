@@ -77,7 +77,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/styles/variables.scss";
 .product-card {
   background: white;
   border-radius: 4px;

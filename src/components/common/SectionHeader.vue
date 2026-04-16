@@ -27,7 +27,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/styles/variables.scss";
 .section-header {
   display: flex;
   flex-direction: column;

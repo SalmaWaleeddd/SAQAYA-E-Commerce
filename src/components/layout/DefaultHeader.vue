@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { NAV_ITEMS } from '@/constants/layout';
+import { NAV_ITEMS } from "@/constants/layout";
 
 export default {
   name: "DefaultHeader",
@@ -95,7 +95,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/styles/variables.scss";
 .header {
   padding: 2rem;
 

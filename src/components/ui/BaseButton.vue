@@ -1,5 +1,5 @@
 <template>
-  <button 
+  <button
     class="base-btn"
     :class="[`base-btn--${variant}`, { 'base-btn--full-width': fullWidth }]"
     @click="$emit('click', $event)"
@@ -31,8 +31,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/styles/variables.scss";
-
 .base-btn {
   display: inline-flex;
   align-items: center;

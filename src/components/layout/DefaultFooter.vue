@@ -136,7 +136,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/styles/variables.scss";
 .footer {
   background-color: #000;
   color: $color-app-white;
@@ -319,7 +318,7 @@ export default {
       padding: 0 20px;
       gap: 32px;
     }
-      &__app-links{
+    &__app-links {
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -346,7 +345,7 @@ export default {
     &__links {
       align-items: center;
     }
-    &__app-links{
+    &__app-links {
       display: flex;
       flex-direction: column;
       gap: 12px;

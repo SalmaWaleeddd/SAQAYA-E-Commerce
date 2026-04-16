@@ -13,9 +13,9 @@
 </template>
 
 <script>
-import  ProductList  from "@/components/product/ProductList.vue";
-import  SectionHeader  from "@/components/common/SectionHeader.vue";
-import  BaseButton  from "@/components/ui/BaseButton.vue";
+import ProductList from "@/components/product/ProductList.vue";
+import SectionHeader from "@/components/common/SectionHeader.vue";
+import BaseButton from "@/components/ui/BaseButton.vue";
 export default {
   name: "FlashSales",
   components: {
@@ -32,8 +32,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import "@/assets/styles/variables.scss";
-
 .flash-sales {
   &__view-all {
     display: flex;

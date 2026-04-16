@@ -49,7 +49,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/styles/variables.scss";
 .promotion-banner {
   display: flex;
   align-items: center;

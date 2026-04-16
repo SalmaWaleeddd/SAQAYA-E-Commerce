@@ -32,7 +32,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import "@/assets/styles/variables.scss";
 .categories {
   &__grid {
     display: grid;
