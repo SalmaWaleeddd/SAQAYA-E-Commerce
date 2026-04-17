@@ -39,7 +39,7 @@ import AppleLogo from "@/assets/icons/apple-logo-icon.svg";
 import { TRUST_BADGES } from "@/constants/trustBadges";
 import PromotionCarousel from "@/components/promotions/PromotionCarousel.vue";
 import FlashSales from "@/components/home/FlashSales.vue";
-import ProductCategories from "@/components/home/ProductCategories.vue";
+import ProductCategories from "@/components/product/ProductCategories.vue";
 import ExploreProducts from "@/components/home/ExploreProducts.vue";
 import TrustBadge from "@/components/common/TrustBadge.vue";
 import { mapGetters, mapActions } from "vuex";
