@@ -55,7 +55,7 @@ export default {
   }
 
   &--secondary {
-    background-color: #6c757d;
+    background-color: #000;
     color: #fff;
 
     &:hover {
