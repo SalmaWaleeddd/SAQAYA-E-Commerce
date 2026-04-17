@@ -172,7 +172,12 @@ export default {
         alert("Order placed successfully!");
         await (this as any).clearCart();
         this.closeCart();
-        (this as any).$router.push("/");
+
+        // Only navigate if not already on homepage
+        const currentRoute = (this as any).$route.path;
+        if (currentRoute !== "/") {
+          (this as any).$router.push("/");
+        }
       } catch (error) {
         console.error("Checkout failed:", error);
         alert("Failed to place order. Please try again.");
