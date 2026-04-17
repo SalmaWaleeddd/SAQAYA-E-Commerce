@@ -1,6 +1,9 @@
 <template>
   <div class="layout">
     <app-header @open-cart-sidebar="handleCartSidebar" />
+    
+    <!-- Add CartSidebar component -->
+    <CartSidebar ref="cartSidebar" />
 
     <main class="layout__main">
       <div class="layout__container">
@@ -16,6 +19,7 @@
 <script>
 import DefaultHeader from "./DefaultHeader.vue";
 import DefaultFooter from "./DefaultFooter.vue";
+import CartSidebar from "@/components/cart/CartSidebar.vue";
 
 export default {
   name: "DefaultLayout",
@@ -24,11 +28,15 @@ export default {
     "app-header": DefaultHeader,
     "app-footer": DefaultFooter,
     BreadCrumb: () => import("@/components/common/BreadCrumb.vue"),
+    CartSidebar,
   },
 
   methods: {
     handleCartSidebar() {
-      this.$emit("open-cart-sidebar");
+      // Open the cart sidebar when event is received
+      if (this.$refs.cartSidebar) {
+        this.$refs.cartSidebar.openCart();
+      }
     },
   },
 };

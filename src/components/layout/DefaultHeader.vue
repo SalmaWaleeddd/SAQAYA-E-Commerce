@@ -54,6 +54,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import { NAV_ITEMS } from "@/constants/layout";
 
 export default {
@@ -67,9 +68,10 @@ export default {
   },
 
   computed: {
+    ...mapGetters("cart", ["cartItemCount"]),
+
     cartItemsCount() {
-      /* TODO: Implement cart items count logic */
-      return 0;
+      return this.cartItemCount;
     },
   },
 
@@ -78,6 +80,10 @@ export default {
       if (this.searchQuery.trim()) {
         /* TODO: Implement search functionality */
         console.log("Searching for:", this.searchQuery);
+        this.$router.push({
+          path: "/search",
+          query: { q: this.searchQuery },
+        });
       }
     },
 
@@ -112,6 +118,7 @@ export default {
       font-size: 24px;
       font-weight: bold;
       color: #000;
+      margin: 0;
     }
   }
 
@@ -190,6 +197,10 @@ export default {
 
       &:hover {
         background-color: $color-primary;
+
+        img {
+          filter: brightness(0) invert(1);
+        }
       }
     }
   }
@@ -201,6 +212,15 @@ export default {
       cursor: pointer;
       padding: 0;
       position: relative;
+      transition: transform 0.2s ease;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
     }
 
     .cart-icon-wrapper {
@@ -230,8 +250,23 @@ export default {
         padding: 0 4px;
         box-sizing: border-box;
         line-height: 1;
+        animation: bounceIn 0.3s ease;
       }
     }
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }
 
@@ -244,15 +279,27 @@ export default {
       gap: 16px;
     }
 
+    &__logo {
+      &__text {
+        font-size: 20px;
+      }
+    }
+
     &__nav {
       order: 3;
       width: 100%;
 
       ul {
         justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
 
         li {
           margin: 0 12px;
+
+          a {
+            font-size: 14px;
+          }
         }
       }
     }
@@ -265,6 +312,20 @@ export default {
       input {
         width: 150px;
       }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    &__search-bar {
+      input {
+        width: 120px;
+      }
+    }
+
+    &__actions {
+      gap: 1rem;
     }
   }
 }
