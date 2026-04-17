@@ -2,14 +2,14 @@
   <div class="product-card">
     <div class="product-card__img-container">
       <div
-        v-if="product.discount"
+        v-if="product.discountPercentage"
         class="product-card__img-container__discount"
       >
-        -{{ product.discount }}%
+        -{{ product.discountPercentage }}%
       </div>
       <img
-        :src="product.img"
-        :alt="product.name"
+        :src="product.thumbnail"
+        :alt="product.title"
         class="product-card__img-container__img"
       />
       <div class="product-card__img-container__actions">
@@ -22,38 +22,37 @@
       </div>
     </div>
 
-    <h3 class="product-card__title">{{ product.name }}</h3>
+    <h3 class="product-card__title">{{ product.title }}</h3>
 
     <!-- Price Section -->
     <div class="product-card__price-wrapper">
       <!-- Sale price -->
       <p class="product-card__price-wrapper__price-sale">
-        ${{ formatPrice(product.salePrice || product.price) }}
+        ${{ formatPrice(getSalePrice()) }}
       </p>
       <!-- Original price -->
-      <p
-        v-if="product.discount || product.salePrice"
-        class="product-card__price-wrapper__price-original"
-      >
+      <p v-if="hasDiscount" class="product-card__price-wrapper__price-original">
         ${{ formatPrice(product.price) }}
       </p>
     </div>
 
-    <!-- Rating Section -->
     <div class="product-card__rating">
       <span
         v-for="n in 5"
         :key="n"
         class="product-card__rating__star"
-        :class="{ 'product-card__rating__star--filled': n <= product.stars }"
+        :class="{ 'product-card__rating__star--filled': n <= getRating() }"
         >★</span
       >
-      <span class="product-card__rating__reviews">({{ product.reviews }})</span>
+      <span class="product-card__rating__reviews"
+        >({{ getReviewCount() }})</span
+      >
     </div>
   </div>
 </template>
 
 <script>
+import { formatPrice } from "@/utils/stringUtils";
 export default {
   name: "ProductCard",
   props: {
@@ -61,16 +60,37 @@ export default {
       type: Object,
       required: true,
       validator: (value) => {
-        return value.name && value.price !== undefined;
+        return value && value.title && value.price !== undefined;
       },
     },
   },
+  computed: {
+    hasDiscount() {
+      return !!(this.product.discountPercentage || this.product.salePrice);
+    },
+  },
   methods: {
-    formatPrice(price) {
-      if (typeof price === "number") {
-        return price.toFixed(2);
+    formatPrice,
+    getSalePrice() {
+      if (this.product.discountPercentage) {
+        return this.product.price * (1 - this.product.discountPercentage / 100);
       }
-      return parseFloat(price).toFixed(2);
+      return this.product.price;
+    },
+
+    getRating() {
+      const rating = this.product.rating || 0;
+      return Math.floor(rating);
+    },
+
+    getReviewCount() {
+      if (typeof this.product.reviews === "number") {
+        return this.product.reviews;
+      }
+      if (Array.isArray(this.product.reviews)) {
+        return this.product.reviews.length;
+      }
+      return 0;
     },
   },
 };
@@ -175,14 +195,11 @@ export default {
     font-weight: 500;
     font-size: 16px;
 
-    // Sale price (current price)
     &__price-sale {
       color: $color-primary;
-
       margin: 0;
     }
 
-    // Original price (crossed out) - GRAY
     &__price-original {
       color: #000;
       opacity: 0.5;
