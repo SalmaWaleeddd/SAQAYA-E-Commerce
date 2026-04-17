@@ -36,11 +36,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+
 import { CartItem } from "@/types/cart";
 import { formatPrice } from "@/utils/stringUtils";
 
-export default defineComponent({
+export default {
   name: "CartItem",
   props: {
     item: {
@@ -71,7 +71,7 @@ export default defineComponent({
       this.$emit("remove", this.item.productId);
     },
   },
-});
+};
 </script>
 
 <style lang="scss" scoped>
