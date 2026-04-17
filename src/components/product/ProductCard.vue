@@ -20,6 +20,14 @@
           <img src="@/assets/icons/eye-icon.svg" alt="Quick view" />
         </button>
       </div>
+
+      <BaseButton
+        class="product-card__img-container__add-to-cart"
+        @click="handleAddToCart"
+        variant="secondary"
+      >
+        Add to Cart
+      </BaseButton>
     </div>
 
     <h3 class="product-card__title">{{ product.title }}</h3>
@@ -53,8 +61,12 @@
 
 <script>
 import { formatPrice } from "@/utils/stringUtils";
+import BaseButton from "../ui/BaseButton.vue";
 export default {
   name: "ProductCard",
+  components: {
+    BaseButton,
+  },
   props: {
     product: {
       type: Object,
@@ -92,6 +104,10 @@ export default {
       }
       return 0;
     },
+
+    handleAddToCart() {
+      this.$emit("add-to-cart", this.product);
+    },
   },
 };
 </script>
@@ -107,6 +123,11 @@ export default {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
     .product-card__img-container__actions {
+      opacity: 1;
+    }
+
+    .product-card__img-container__add-to-cart {
+      transform: translateY(0);
       opacity: 1;
     }
   }
@@ -176,6 +197,16 @@ export default {
           height: 16px;
         }
       }
+    }
+
+    &__add-to-cart {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      transform: translateY(100%);
+      z-index: 2;
     }
   }
 
