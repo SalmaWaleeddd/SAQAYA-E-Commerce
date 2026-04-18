@@ -11,12 +11,16 @@
         :src="product.thumbnail"
         :alt="product.title"
         class="product-card__img-container__img"
+        @click="goToProductDetail"
       />
       <div class="product-card__img-container__actions">
         <button class="product-card__img-container__actions__btn">
           <img src="@/assets/icons/fav-icon.svg" alt="Add to favorites" />
         </button>
-        <button class="product-card__img-container__actions__btn">
+        <button 
+          class="product-card__img-container__actions__btn"
+          @click="goToProductDetail"
+        >
           <img src="@/assets/icons/eye-icon.svg" alt="Quick view" />
         </button>
       </div>
@@ -30,7 +34,7 @@
       </BaseButton>
     </div>
 
-    <h3 class="product-card__title">{{ product.title }}</h3>
+    <h3 class="product-card__title" @click="goToProductDetail">{{ product.title }}</h3>
 
     <!-- Price Section -->
     <div class="product-card__price-wrapper">
@@ -62,6 +66,7 @@
 <script>
 import { formatPrice } from "@/utils/stringUtils";
 import BaseButton from "../ui/BaseButton.vue";
+
 export default {
   name: "ProductCard",
   components: {
@@ -83,6 +88,7 @@ export default {
   },
   methods: {
     formatPrice,
+    
     getSalePrice() {
       if (this.product.discountPercentage) {
         return this.product.price * (1 - this.product.discountPercentage / 100);
@@ -108,6 +114,10 @@ export default {
     handleAddToCart() {
       this.$emit("add-to-cart", this.product);
     },
+
+    goToProductDetail() {
+      this.$router.push(`/product/${this.product.id}`);
+    },
   },
 };
 </script>
@@ -117,6 +127,7 @@ export default {
   background: white;
   border-radius: 4px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
 
   &:hover {
     transform: translateY(-4px);
@@ -160,6 +171,11 @@ export default {
       height: auto;
       object-fit: cover;
       transition: transform 0.3s ease;
+      cursor: pointer;
+
+      &:hover {
+        transform: scale(1.05);
+      }
     }
 
     &__actions {
@@ -216,6 +232,12 @@ export default {
     margin: 0 0 8px 0;
     color: #000;
     line-height: 1.4;
+    cursor: pointer;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: $color-primary;
+    }
   }
 
   &__price-wrapper {
