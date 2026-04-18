@@ -116,7 +116,8 @@ export default {
     },
 
     goToProductDetail() {
-      this.$router.push(`/product/${this.product.id}`);
+      this.$router.push(`/products/${this.product.id}`);
+      window.scrollTo(0, 0);
     },
   },
 };
