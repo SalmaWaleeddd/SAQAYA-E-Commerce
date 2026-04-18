@@ -16,19 +16,26 @@ const routes: Array<RouteConfig> = [
     component: () => import("../views/AboutView.vue"),
   },
   {
-    path: "/404-error",
-    component: () => import("../views/404View.vue"),
+    path: "/products",
+    name: "products",
+    component: () => import("../views/ProductsView.vue"),
   },
   {
     path: "/contact",
+    name: "contact",
     component: () => import("../views/ContactView.vue"),
   },
   {
-  path: '/product/:id',
-  name: 'ProductDetail',
-  component: () => import('@/views/ProductDetailView.vue'),
-  props: true
-}
+    path: "/product/:id",
+    name: "ProductDetail",
+    component: () => import("@/views/ProductDetailView.vue"),
+    props: true,
+  },
+  {
+    path: "*",
+    name: "NotFound",
+    component: () => import("@/views/404View.vue"),
+  },
 ];
 
 const router = new VueRouter({
