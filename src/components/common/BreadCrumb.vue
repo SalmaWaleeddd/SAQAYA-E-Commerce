@@ -25,11 +25,14 @@
 </template>
 
 <script>
+import productService from "@/services/product.service";
+
 export default {
   name: "BreadCrumb",
   data() {
     return {
       breadcrumbs: [],
+      productName: null,
     };
   },
   computed: {
@@ -46,7 +49,7 @@ export default {
     },
   },
   methods: {
-    generateBreadcrumbs() {
+    async generateBreadcrumbs() {
       const path = this.$route.path;
       const segments = path.split("/").filter((segment) => segment);
 
@@ -57,18 +60,62 @@ export default {
         const segment = segments[i];
         currentPath += `/${segment}`;
 
+        let displayName = this.formatName(segment);
+
+        // Check if this is a product ID segment (numeric)
+        if (this.isProductId(segment)) {
+          displayName = await this.getProductName(segment);
+        }
+
         breadcrumbs.push({
-          name: this.formatName(segment),
+          name: displayName,
           path: currentPath,
+          originalSegment: segment,
         });
       }
 
       this.breadcrumbs = breadcrumbs;
     },
 
+    isProductId(segment) {
+      // Check if segment is a number (product ID)
+      return /^\d+$/.test(segment);
+    },
+
+    async getProductName(productId) {
+      // Check if we already have this product cached
+      if (this.productName && this.productName.id === productId) {
+        return this.productName.name;
+      }
+
+      try {
+        const product = await productService.getProductById(parseInt(productId, 10));
+        const productName = product.title;
+        
+        // Cache the product name
+        this.productName = {
+          id: productId,
+          name: productName,
+        };
+        
+        return productName;
+      } catch (error) {
+        console.error("Failed to fetch product name:", error);
+        return `Product ${productId}`;
+      }
+    },
+
     formatName(segment) {
       if (segment === "404-error") {
         return "404 Error";
+      }
+
+      if (segment === "product") {
+        return "Product";
+      }
+
+      if (this.isProductId(segment)) {
+        return "Loading..."; // Temporary text while fetching
       }
 
       let name = segment.replace(/-/g, " ");
@@ -90,6 +137,7 @@ export default {
   flex-wrap: wrap;
   padding: 16px 0;
   margin-bottom: 20px;
+  
   a,
   &__link {
     color: #000;
@@ -100,6 +148,7 @@ export default {
 
     &:hover {
       color: $color-primary;
+      opacity: 1;
     }
     &:active,
     &:visited {
