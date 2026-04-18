@@ -26,7 +26,7 @@ const routes: Array<RouteConfig> = [
     component: () => import("../views/ContactView.vue"),
   },
   {
-    path: "/product/:id",
+    path: "/products/:id",
     name: "ProductDetail",
     component: () => import("@/views/ProductDetailView.vue"),
     props: true,
