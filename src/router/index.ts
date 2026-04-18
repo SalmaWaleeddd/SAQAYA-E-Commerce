@@ -23,6 +23,12 @@ const routes: Array<RouteConfig> = [
     path: "/contact",
     component: () => import("../views/ContactView.vue"),
   },
+  {
+  path: '/product/:id',
+  name: 'ProductDetail',
+  component: () => import('@/views/ProductDetailView.vue'),
+  props: true
+}
 ];
 
 const router = new VueRouter({
