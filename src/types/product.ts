@@ -2,6 +2,7 @@ export interface Product {
   id: number;
   title: string;
   description: string;
+  stock: number;
   category: string;
   price: number;
   discountPercentage: number;
@@ -28,10 +29,22 @@ export interface ProductFilters {
   order?: "asc" | "desc" | null;
 }
 
+export type SortOption = {
+  label: string;
+  value: string;
+  sortBy: string;
+  order: "asc" | "desc";
+};
 export interface Category {
   slug: string;
   name: string;
   url: string;
+}
+
+export interface CategoryDisplay {
+  id:number;
+  name: string;
+  icon: string;
 }
 
 export interface PaginationState {
