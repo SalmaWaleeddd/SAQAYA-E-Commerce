@@ -1,5 +1,5 @@
 <template>
-  <div class="trust-badge">
+  <div class="trust-badge" :class="{ 'trust-badge--with-border': hasBorder }">
     <div class="trust-badge__container">
       <div class="trust-badge__item">
         <div class="trust-badge__icon-container">
@@ -26,6 +26,10 @@ export default {
       type: Object,
       required: true,
     },
+    hasBorder: {
+      type: Boolean,
+      default: false,
+    },
   },
 };
 </script>
@@ -33,15 +37,42 @@ export default {
 <style lang="scss" scoped>
 .trust-badge {
   margin: 3rem 0;
+  &:hover {
+    background-color: $color-primary;
+
+    .trust-badge__title,
+    .trust-badge__description {
+      color: #fff;
+    }
+
+    .trust-badge__icon-background {
+      background-color: #fff;
+    }
+
+    .trust-badge__icon-container {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  &--with-border {
+    .trust-badge__container {
+      border: 1px solid rgb(0, 0, 0, 0.3);
+      border-radius: 4px;
+      padding: 20px;
+    }
+  }
+
   &__container {
     width: 250px;
   }
+
   &__item {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
   }
+
   &__icon-container {
     width: 80px;
     height: 80px;
@@ -51,6 +82,7 @@ export default {
     justify-content: center;
     background-color: rgba(47, 46, 48, 0.3);
   }
+
   &__icon-background {
     background-color: #000;
     padding: 20px;
@@ -62,12 +94,14 @@ export default {
     justify-content: center;
     align-items: center;
   }
+
   &__icon {
     width: 40px;
     height: 40px;
     object-fit: contain;
     border-radius: 50%;
   }
+
   &__title {
     font-size: 20px;
     font-weight: 600;
@@ -75,6 +109,7 @@ export default {
     margin-bottom: 0.5rem;
     white-space: nowrap;
   }
+
   &__description {
     font-size: 14px;
     font-weight: 400;
