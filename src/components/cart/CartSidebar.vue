@@ -127,17 +127,17 @@ export default {
     },
 
     qualifiesForFreeShipping(): boolean {
-      return this.typedCartSummary.subtotal >= FREE_SHIPPING_THRESHOLD;
+      return (this as any).typedCartSummary.subtotal >= FREE_SHIPPING_THRESHOLD;
     },
 
     freeShippingRemaining(): number {
-      if (this.qualifiesForFreeShipping) return 0;
-      return FREE_SHIPPING_THRESHOLD - this.typedCartSummary.subtotal;
+      if ((this as any).qualifiesForFreeShipping) return 0;
+      return FREE_SHIPPING_THRESHOLD - (this as any).typedCartSummary.subtotal;
     },
 
     freeShippingProgress(): number {
-      if (this.qualifiesForFreeShipping) return 100;
-      return (this.typedCartSummary.subtotal / FREE_SHIPPING_THRESHOLD) * 100;
+      if ((this as any).qualifiesForFreeShipping) return 100;
+      return ((this as any).typedCartSummary.subtotal / FREE_SHIPPING_THRESHOLD) * 100;
     },
   },
   methods: {
@@ -145,10 +145,7 @@ export default {
 
     ...mapActions("cart", ["updateQuantity", "removeItem", "clearCart"]),
 
-    handleUpdateQuantity(payload: {
-      productId: number;
-      quantity: number;
-    }): void {
+    handleUpdateQuantity(payload: { productId: number; quantity: number }): void {
       (this as any).updateQuantity(payload);
     },
 
@@ -157,27 +154,22 @@ export default {
     },
 
     openCart(): void {
-      this.isOpen = true;
+      (this as any).isOpen = true;
       document.body.style.overflow = "hidden";
     },
 
     closeCart(): void {
-      this.isOpen = false;
+      (this as any).isOpen = false;
       document.body.style.overflow = "";
     },
 
     async handleCheckout(): Promise<void> {
       try {
-        console.log("Order placed:", this.typedCartItems);
+        console.log("Order placed:", (this as any).typedCartItems);
         alert("Order placed successfully!");
         await (this as any).clearCart();
-        this.closeCart();
-
-        // Only navigate if not already on homepage
-        const currentRoute = (this as any).$route.path;
-        if (currentRoute !== "/") {
-          (this as any).$router.push("/");
-        }
+        (this as any).closeCart();
+        (this as any).$router.push("/");
       } catch (error) {
         console.error("Checkout failed:", error);
         alert("Failed to place order. Please try again.");
@@ -185,10 +177,10 @@ export default {
     },
   },
   mounted() {
-    (this as any).$root.$on("open-cart-sidebar", this.openCart);
+    (this as any).$root.$on("open-cart-sidebar", (this as any).openCart);
   },
   beforeDestroy() {
-    (this as any).$root.$off("open-cart-sidebar", this.openCart);
+    (this as any).$root.$off("open-cart-sidebar", (this as any).openCart);
   },
 };
 </script>

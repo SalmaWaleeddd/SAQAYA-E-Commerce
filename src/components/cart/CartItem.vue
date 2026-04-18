@@ -36,7 +36,6 @@
 </template>
 
 <script lang="ts">
-
 import { CartItem } from "@/types/cart";
 import { formatPrice } from "@/utils/stringUtils";
 
@@ -52,23 +51,23 @@ export default {
     formatPrice,
 
     increment() {
-      this.$emit("update-quantity", {
-        productId: this.item.productId,
-        quantity: this.item.quantity + 1,
+      (this as any).$emit("update-quantity", {
+        productId: (this as any).item.productId,
+        quantity: (this as any).item.quantity + 1,
       });
     },
 
     decrement() {
-      if (this.item.quantity > 1) {
-        this.$emit("update-quantity", {
-          productId: this.item.productId,
-          quantity: this.item.quantity - 1,
+      if ((this as any).item.quantity > 1) {
+        (this as any).$emit("update-quantity", {
+          productId: (this as any).item.productId,
+          quantity: (this as any).item.quantity - 1,
         });
       }
     },
 
     remove() {
-      this.$emit("remove", this.item.productId);
+      (this as any).$emit("remove", (this as any).item.productId);
     },
   },
 };
