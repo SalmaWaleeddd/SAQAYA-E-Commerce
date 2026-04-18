@@ -3,7 +3,7 @@
     <div class="products-view__container">
       <div class="products-view__header">
         <h1 class="products-view__title">Explore Our Products</h1>
-        <ProductsSorting 
+        <ProductsSorting
           :current-sort="currentSort"
           @sort-change="handleSortChange"
         />
@@ -15,29 +15,41 @@
       </div>
 
       <!-- Products Grid -->
-      <div v-if="!isLoading && productsList.length > 0" class="products-view__grid">
+      <div
+        v-if="!isLoading && productsList.length > 0"
+        class="products-view__grid"
+      >
         <ProductList :products="productsList" @add-to-cart="handleAddToCart" />
       </div>
 
       <!-- Loading State -->
-      <div v-if="isLoading && productsList.length === 0" class="products-view__loading">
+      <div
+        v-if="isLoading && productsList.length === 0"
+        class="products-view__loading"
+      >
         <div class="loading__spinner"></div>
         <p>Loading products...</p>
       </div>
 
       <!-- Empty State -->
-      <div v-else-if="!isLoading && productsList.length === 0" class="products-view__empty">
+      <div
+        v-else-if="!isLoading && productsList.length === 0"
+        class="products-view__empty"
+      >
         <p>No products found</p>
       </div>
 
       <!-- Load More Button -->
-      <div v-if="hasMoreProducts && !isLoading && productsList.length > 0" class="products-view__load-more">
-        <BaseButton 
-          @click="loadMoreProducts" 
+      <div
+        v-if="hasMoreProducts && !isLoading && productsList.length > 0"
+        class="products-view__load-more"
+      >
+        <BaseButton
+          @click="loadMoreProducts"
           variant="primary"
           :disabled="loadMoreLoading"
         >
-          {{ loadMoreLoading ? 'Loading...' : 'Load more...' }}
+          {{ loadMoreLoading ? "Loading..." : "Load more..." }}
         </BaseButton>
       </div>
     </div>
@@ -103,8 +115,9 @@ export default {
     },
 
     async loadMoreProducts(): Promise<void> {
-      if ((this as any).loadMoreLoading || !(this as any).hasMoreProducts) return;
-      
+      if ((this as any).loadMoreLoading || !(this as any).hasMoreProducts)
+        return;
+
       (this as any).loadMoreLoading = true;
       try {
         await (this as any).loadMore();
@@ -117,11 +130,11 @@ export default {
 
     async handleSortChange(sortValue: string): Promise<void> {
       (this as any).currentSort = sortValue;
-      
+
       const selectedOption = SORT_OPTIONS.find(
-        (option: SortOption) => option.value === sortValue
+        (option: SortOption) => option.value === sortValue,
       );
-      
+
       if (selectedOption && selectedOption.value !== "default") {
         await (this as any).applyFilters({
           sortBy: selectedOption.sortBy,
@@ -141,7 +154,7 @@ export default {
         product: product,
         quantity: 1,
       });
-      
+
       // Open cart sidebar
       (this as any).$root.$emit("open-cart-sidebar");
     },
@@ -228,8 +241,12 @@ export default {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 768px) {
