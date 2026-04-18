@@ -36,11 +36,11 @@
     <div class="product-card__price-wrapper">
       <!-- Sale price -->
       <p class="product-card__price-wrapper__price-sale">
-        ${{ formatPrice(getSalePrice()) }}
+        {{ formatPrice(getSalePrice()) }}
       </p>
       <!-- Original price -->
       <p v-if="hasDiscount" class="product-card__price-wrapper__price-original">
-        ${{ formatPrice(product.price) }}
+        {{ formatPrice(product.price) }}
       </p>
     </div>
 
