@@ -18,7 +18,6 @@ describe('CartSidebar.vue', () => {
         typedCartSummary: () => ({ subtotal: 0, shipping: 0, total: 0, itemCount: 0 })
       }
     });
-    
     expect(wrapper.text()).toContain('Your cart is empty');
   });
 
@@ -39,7 +38,6 @@ describe('CartSidebar.vue', () => {
         typedCartSummary: () => ({ subtotal: 199.98, shipping: 5, total: 204.98, itemCount: 2 })
       }
     });
-    
     expect(wrapper.find('.cart-sidebar__items').exists()).toBe(true);
   });
 
@@ -50,7 +48,6 @@ describe('CartSidebar.vue', () => {
         typedCartSummary: () => ({ subtotal: 0, shipping: 0, total: 0, itemCount: 0 })
       }
     });
-    
     expect(wrapper.vm.isOpen).toBe(false);
     await wrapper.vm.openCart();
     expect(wrapper.vm.isOpen).toBe(true);
@@ -63,10 +60,8 @@ describe('CartSidebar.vue', () => {
         typedCartSummary: () => ({ subtotal: 0, shipping: 0, total: 0, itemCount: 0 })
       }
     });
-    
     await wrapper.vm.openCart();
     expect(wrapper.vm.isOpen).toBe(true);
-    
     await wrapper.vm.closeCart();
     expect(wrapper.vm.isOpen).toBe(false);
   });
@@ -78,7 +73,6 @@ describe('CartSidebar.vue', () => {
         typedCartSummary: () => ({ subtotal: 30, shipping: 5, total: 35, itemCount: 1 })
       }
     });
-    
     expect(wrapper.vm.freeShippingRemaining).toBeGreaterThan(0);
   });
 
@@ -89,7 +83,6 @@ describe('CartSidebar.vue', () => {
         typedCartSummary: () => ({ subtotal: 150, shipping: 0, total: 150, itemCount: 3 })
       }
     });
-    
     expect(wrapper.vm.qualifiesForFreeShipping).toBe(true);
   });
 });

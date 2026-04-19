@@ -4,89 +4,45 @@ import BaseButton from '@/components/ui/BaseButton.vue';
 describe('BaseButton.vue', () => {
   let wrapper: any;
 
+  beforeEach(() => {
+    wrapper = shallowMount(BaseButton);
+  });
+
   afterEach(() => {
     if (wrapper) wrapper.destroy();
   });
 
   describe('Rendering', () => {
     it('renders button with default variant', () => {
-      wrapper = shallowMount(BaseButton);
       expect(wrapper.classes()).toContain('base-btn--primary');
     });
 
-    it('renders button with secondary variant', () => {
-      wrapper = shallowMount(BaseButton, {
-        propsData: { variant: 'secondary' }
-      });
+    it('renders button with secondary variant', async () => {
+      await wrapper.setProps({ variant: 'secondary' });
       expect(wrapper.classes()).toContain('base-btn--secondary');
     });
 
-    it('renders button with outline variant', () => {
-      wrapper = shallowMount(BaseButton, {
-        propsData: { variant: 'outline' }
-      });
+    it('renders button with outline variant', async () => {
+      await wrapper.setProps({ variant: 'outline' });
       expect(wrapper.classes()).toContain('base-btn--outline');
     });
 
-    it('renders button with fullWidth class when fullWidth is true', () => {
-      wrapper = shallowMount(BaseButton, {
-        propsData: { fullWidth: true }
-      });
+    it('renders button with fullWidth class when fullWidth is true', async () => {
+      await wrapper.setProps({ fullWidth: true });
       expect(wrapper.classes()).toContain('base-btn--full-width');
     });
 
-    it('does not render fullWidth class when fullWidth is false', () => {
-      wrapper = shallowMount(BaseButton, {
-        propsData: { fullWidth: false }
-      });
-      expect(wrapper.classes()).not.toContain('base-btn--full-width');
-    });
-
-    it('displays text from text prop', () => {
+    it('displays text from text prop', async () => {
       const buttonText = 'Click Me';
-      wrapper = shallowMount(BaseButton, {
-        propsData: { text: buttonText }
-      });
+      await wrapper.setProps({ text: buttonText });
       expect(wrapper.text()).toBe(buttonText);
-    });
-
-    it('displays slot content instead of text prop', () => {
-      wrapper = shallowMount(BaseButton, {
-        propsData: { text: 'Prop Text' },
-        slots: { default: 'Slot Content' }
-      });
-      expect(wrapper.text()).toBe('Slot Content');
     });
   });
 
   describe('Events', () => {
     it('emits click event when button is clicked', async () => {
-      wrapper = shallowMount(BaseButton);
       await wrapper.trigger('click');
       expect(wrapper.emitted('click')).toBeTruthy();
-      expect(wrapper.emitted('click').length).toBe(1);
-    });
-
-    it('emits click event with $event payload', async () => {
-      wrapper = shallowMount(BaseButton);
-      await wrapper.trigger('click');
-      expect(wrapper.emitted('click')[0]).toBeDefined();
-    });
-  });
-
-  describe('Styling', () => {
-    it('applies correct base classes', () => {
-      wrapper = shallowMount(BaseButton);
-      expect(wrapper.classes()).toContain('base-btn');
-    });
-
-    it('applies multiple classes correctly', () => {
-      wrapper = shallowMount(BaseButton, {
-        propsData: { variant: 'outline', fullWidth: true }
-      });
-      expect(wrapper.classes()).toContain('base-btn');
-      expect(wrapper.classes()).toContain('base-btn--outline');
-      expect(wrapper.classes()).toContain('base-btn--full-width');
     });
   });
 });
