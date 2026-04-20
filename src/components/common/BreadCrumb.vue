@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import productService from "@/services/product.service";
+import { mapState } from "vuex";
 
 export default {
   name: "BreadCrumb",
@@ -39,6 +39,9 @@ export default {
     isHomePage() {
       return this.$route.path === "/";
     },
+     ...mapState("products", {
+      currentProduct: (state) => state.currentProduct,
+    }),
   },
   watch: {
     $route: {
@@ -82,27 +85,14 @@ export default {
       return /^\d+$/.test(segment);
     },
 
-    async getProductName(productId) {
-      // Check if we already have this product cached
-      if (this.productName && this.productName.id === productId) {
-        return this.productName.name;
+    getProductName(productId: string) {
+      // If currentProduct matches, return its title
+      if (this.currentProduct && this.currentProduct.id === productId) {
+        return this.currentProduct.title;
       }
 
-      try {
-        const product = await productService.getProductById(parseInt(productId, 10));
-        const productName = product.title;
-        
-        // Cache the product name
-        this.productName = {
-          id: productId,
-          name: productName,
-        };
-        
-        return productName;
-      } catch (error) {
-        console.error("Failed to fetch product name:", error);
-        return `Product ${productId}`;
-      }
+      // Fallback: if no match, just return a placeholder
+      return `Product ${productId}`;
     },
 
     formatName(segment) {
