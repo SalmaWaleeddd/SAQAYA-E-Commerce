@@ -58,7 +58,6 @@ class CartService {
       : product.price;
 
     return {
-      id: Date.now() + Math.random(), // temporary unique ID
       productId: product.id,
       title: product.title,
       thumbnail: product.thumbnail,
