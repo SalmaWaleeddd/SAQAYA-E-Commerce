@@ -17,30 +17,21 @@
       <div v-else-if="product" class="product-detail-view__content">
         <div class="product-detail-view__main">
           <!-- Product Gallery -->
-          <ProductGallery 
-            :images="product.images" 
-            :title="product.title" 
-          />
+          <ProductGallery :images="product.images" :title="product.title" />
 
           <!-- Product Details: Info + Actions + Delivery -->
-          <ProductDetails 
-            :product="product"
-            @add-to-cart="handleAddToCart"
-            @buy-now="handleBuyNow"
-          />
+          <ProductDetails :product="product" @buy-now="handleBuyNow" />
         </div>
 
         <!-- Related Products Section -->
         <div class="product-detail-view__related">
           <SectionHeader subtitle="More of this category" title="" />
-          <ProductList 
+          <ProductList
             v-if="relatedProducts.length > 0"
             :products="relatedProducts"
             @add-to-cart="handleAddToCart"
           />
-          <div v-else class="related__empty">
-            No related products found.
-          </div>
+          <div v-else class="related__empty">No related products found.</div>
         </div>
       </div>
     </div>
@@ -81,19 +72,19 @@ export default {
       storeLoading: (state: any) => state.loading,
       storeError: (state: any) => state.error,
     }),
-    
+
     isLoading(): boolean {
       return (this as any).storeLoading;
     },
-    
+
     hasError(): boolean {
       return !!(this as any).storeError;
     },
-    
+
     errorMessage(): string {
       return (this as any).storeError || "Failed to load product details";
     },
-    
+
     product(): Product | null {
       return (this as any).$store.state.products.currentProduct;
     },
@@ -119,11 +110,18 @@ export default {
       }
     },
 
-    async loadRelatedProducts(category: string, currentProductId: number): Promise<void> {
+    async loadRelatedProducts(
+      category: string,
+      currentProductId: number,
+    ): Promise<void> {
       try {
-        const productService = (await import("@/services/product.service")).default;
-        const response = await productService.getProductsByCategory(category, 5);
-        
+        const productService = (await import("@/services/product.service"))
+          .default;
+        const response = await productService.getProductsByCategory(
+          category,
+          5,
+        );
+
         (this as any).relatedProducts = response.products
           .filter((p: Product) => p.id !== currentProductId)
           .slice(0, 4);
@@ -137,7 +135,7 @@ export default {
         product: payload.product,
         quantity: payload.quantity,
       });
-      
+
       (this as any).$root.$emit("open-cart-sidebar");
     },
 
@@ -146,7 +144,7 @@ export default {
         product: payload.product,
         quantity: payload.quantity,
       });
-      
+
       (this as any).$root.$emit("open-cart-sidebar");
     },
 
@@ -178,7 +176,7 @@ export default {
   &__loading {
     text-align: center;
     padding: 80px 20px;
-    
+
     .loading__spinner {
       width: 48px;
       height: 48px;
@@ -188,7 +186,7 @@ export default {
       animation: spin 1s linear infinite;
       margin: 0 auto 16px;
     }
-    
+
     p {
       color: #666;
       font-size: 16px;
@@ -198,7 +196,7 @@ export default {
   &__error {
     text-align: center;
     padding: 80px 20px;
-    
+
     p {
       color: #c62828;
       font-size: 16px;
@@ -235,8 +233,12 @@ export default {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 768px) {

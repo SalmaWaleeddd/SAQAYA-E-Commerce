@@ -5,23 +5,24 @@
       <h1 class="info__title">{{ product.title }}</h1>
 
       <!-- Rating -->
-    <div class="info__rating">
-  <div class="rating__stars">
-    <span
-      v-for="n in 5"
-      :key="n"
-      class="rating__star"
-      :class="{ 'rating__star--filled': n <= Math.floor(getRating()) }"
-    >★</span>
-  </div>
-  <span class="rating__reviews">({{ getReviewCount() }} Reviews)</span>
-  <span v-if="isInStock" class="rating__stock rating__stock--in">
-    In Stock
-  </span>
-  <span v-else class="rating__stock rating__stock--out">
-    Out of Stock
-  </span>
-</div>
+      <div class="info__rating">
+        <div class="rating__stars">
+          <span
+            v-for="n in 5"
+            :key="n"
+            class="rating__star"
+            :class="{ 'rating__star--filled': n <= Math.floor(getRating()) }"
+            >★</span
+          >
+        </div>
+        <span class="rating__reviews">({{ getReviewCount() }} Reviews)</span>
+        <span v-if="isInStock" class="rating__stock rating__stock--in">
+          In Stock
+        </span>
+        <span v-else class="rating__stock rating__stock--out">
+          Out of Stock
+        </span>
+      </div>
 
       <!-- Price -->
       <div class="info__price-wrapper">
@@ -203,18 +204,6 @@ export default {
         quantity: (this as any).quantity,
       });
     },
-
-    checkDelivery() {
-      if ((this as any).postalCode) {
-        alert(
-          `Checking delivery availability for postal code: ${
-            (this as any).postalCode
-          }`,
-        );
-      } else {
-        alert("Please enter a postal code");
-      }
-    },
   },
 };
 </script>
@@ -288,12 +277,12 @@ export default {
   }
 
   &__star {
-    color: #e0e0e0;  // Light gray for empty stars (not black)
+    color: #e0e0e0; // Light gray for empty stars (not black)
     font-size: 20px;
     transition: color 0.2s ease;
 
     &--filled {
-      color: #ffad33;  // Gold/yellow for filled stars
+      color: #ffad33; // Gold/yellow for filled stars
     }
   }
 
@@ -311,11 +300,11 @@ export default {
     margin-left: 4px;
 
     &--in {
-      color: rgba(0, 255, 102, 0.4);  
+      color: rgba(0, 255, 102, 0.4);
     }
 
     &--out {
-      color: #c62828; 
+      color: #c62828;
     }
   }
 }
@@ -500,21 +489,6 @@ export default {
 
     &:focus {
       border-color: $color-primary;
-    }
-  }
-
-  &__check-btn {
-    padding: 10px 20px;
-    background: $color-primary;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background 0.2s ease;
-
-    &:hover {
-      background: darken($color-primary, 10%);
     }
   }
 }
