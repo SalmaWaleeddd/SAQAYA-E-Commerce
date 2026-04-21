@@ -45,6 +45,7 @@ import TrustBadge from "@/components/common/TrustBadge.vue";
 import { mapGetters, mapActions } from "vuex";
 import { formatCategoryName } from "@/utils/stringUtils";
 import { Product } from "@/types/product";
+import { PROMOTIONS } from "@/constants/promotions";
 
 // Constants
 const FLASH_SALES_COUNT = 6;
@@ -75,26 +76,7 @@ export default {
     return {
       promotionImg,
       AppleLogo,
-      promotionList: [
-        {
-          title: "iPhone 14 Series",
-          subtitle: "Up to 10% off Voucher",
-          img: promotionImg,
-          icon: AppleLogo,
-        },
-        {
-          title: "iPhone 14 Series",
-          subtitle: "Up to 10% off Voucher",
-          img: promotionImg,
-          icon: AppleLogo,
-        },
-        {
-          title: "iPhone 14 Series",
-          subtitle: "Up to 10% off Voucher",
-          img: promotionImg,
-          icon: AppleLogo,
-        },
-      ],
+      promotionList:PROMOTIONS,
       badges: TRUST_BADGES,
       randomFlashSales: [] as Product[],
       error: null as string | null,
