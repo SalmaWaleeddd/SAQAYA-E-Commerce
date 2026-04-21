@@ -1,18 +1,23 @@
 <template>
   <div class="product-gallery">
     <div class="product-gallery__thumbnails">
-      <div 
-        v-for="(image, index) in images" 
+      <div
+        v-for="(image, index) in images"
         :key="index"
         class="product-gallery__thumbnail"
         :class="{ 'product-gallery__thumbnail--active': activeImage === index }"
         @click="activeImage = index"
       >
-        <img :src="image" :alt="title" />
+        <img :src="image" :alt="title" loading="lazy" decoding="async" />
       </div>
     </div>
     <div class="product-gallery__main">
-      <img :src="images[activeImage]" :alt="title" />
+      <img
+        :src="images[activeImage]"
+        :alt="title"
+        loading="lazy"
+        decoding="async"
+      />
     </div>
   </div>
 </template>

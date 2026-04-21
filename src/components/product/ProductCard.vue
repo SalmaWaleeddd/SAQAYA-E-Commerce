@@ -12,12 +12,14 @@
         :alt="product.title"
         class="product-card__img-container__img"
         @click="goToProductDetail"
+        loading="lazy"
+        decoding="async"
       />
       <div class="product-card__img-container__actions">
         <button class="product-card__img-container__actions__btn">
           <img src="@/assets/icons/fav-icon.svg" alt="Add to favorites" />
         </button>
-        <button 
+        <button
           class="product-card__img-container__actions__btn"
           @click="goToProductDetail"
         >
@@ -34,7 +36,9 @@
       </BaseButton>
     </div>
 
-    <h3 class="product-card__title" @click="goToProductDetail">{{ product.title }}</h3>
+    <h3 class="product-card__title" @click="goToProductDetail">
+      {{ product.title }}
+    </h3>
 
     <!-- Price Section -->
     <div class="product-card__price-wrapper">
@@ -88,7 +92,7 @@ export default {
   },
   methods: {
     formatPrice,
-    
+
     getSalePrice() {
       if (this.product.discountPercentage) {
         return this.product.price * (1 - this.product.discountPercentage / 100);
