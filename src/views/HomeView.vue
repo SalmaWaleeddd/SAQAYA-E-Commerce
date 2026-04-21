@@ -46,11 +46,8 @@ import { mapGetters, mapActions } from "vuex";
 import { formatCategoryName } from "@/utils/stringUtils";
 import { Product } from "@/types/product";
 import { PROMOTIONS } from "@/constants/promotions";
+import { FLASH_SALES_COUNT, EXPLORE_PRODUCTS_COUNT, MAX_CATEGORIES } from "@/constants/products";
 
-// Constants
-const FLASH_SALES_COUNT = 6;
-const EXPLORE_PRODUCTS_COUNT = 9;
-const MAX_CATEGORIES = 6;
 
 type HomeViewInstance = {
   randomFlashSales: Product[];

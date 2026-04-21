@@ -1,5 +1,9 @@
 import { SortOption } from "@/types/product";
 
+export const FLASH_SALES_COUNT = 6;
+export const EXPLORE_PRODUCTS_COUNT = 9;
+export const MAX_CATEGORIES = 6;
+
 // Map category slugs to icon image paths
 export const categoryIconMap: Record<string, string> = {
   "beauty": "@/assets/icons/categories/beauty.svg",
