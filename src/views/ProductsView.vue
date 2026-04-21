@@ -19,7 +19,7 @@
         v-if="!isLoading && productsList.length > 0"
         class="products-view__grid"
       >
-        <ProductList :products="productsList" @add-to-cart="handleAddToCart" />
+        <ProductList :products="productsList" />
       </div>
 
       <!-- Loading State -->
@@ -147,16 +147,6 @@ export default {
           order: null,
         });
       }
-    },
-
-    handleAddToCart(product: Product): void {
-      (this as any).addToCart({
-        product: product,
-        quantity: 1,
-      });
-
-      // Open cart sidebar
-      (this as any).$root.$emit("open-cart-sidebar");
     },
   },
   mounted() {

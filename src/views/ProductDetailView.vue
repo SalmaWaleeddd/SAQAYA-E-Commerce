@@ -29,7 +29,6 @@
           <ProductList
             v-if="relatedProducts.length > 0"
             :products="relatedProducts"
-            @add-to-cart="handleAddToCart"
           />
           <div v-else class="related__empty">No related products found.</div>
         </div>
