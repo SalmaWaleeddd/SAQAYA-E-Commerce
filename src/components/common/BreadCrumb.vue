@@ -39,7 +39,7 @@ export default {
     isHomePage() {
       return this.$route.path === "/";
     },
-     ...mapState("products", {
+    ...mapState("products", {
       currentProduct: (state) => state.currentProduct,
     }),
   },
@@ -85,7 +85,7 @@ export default {
       return /^\d+$/.test(segment);
     },
 
-    getProductName(productId: string) {
+    getProductName(productId) {
       // If currentProduct matches, return its title
       if (this.currentProduct && this.currentProduct.id === productId) {
         return this.currentProduct.title;
@@ -127,7 +127,7 @@ export default {
   flex-wrap: wrap;
   padding: 16px 0;
   margin-bottom: 20px;
-  
+
   a,
   &__link {
     color: #000;
