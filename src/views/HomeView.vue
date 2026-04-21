@@ -122,10 +122,7 @@ export default {
 
     randomFlashSalesProducts(): Product[] {
       const vm = this as unknown as HomeViewInstance;
-      if (vm.randomFlashSales.length) return vm.randomFlashSales;
-      if (!vm.allProducts?.length) return [];
-
-      return vm.shuffleArray([...vm.allProducts]).slice(0, FLASH_SALES_COUNT);
+      return vm.randomFlashSales;
     },
 
     exploreProducts(): Product[] {
