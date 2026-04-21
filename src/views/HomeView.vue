@@ -151,8 +151,7 @@ export default {
       vm.error = null;
 
       try {
-        await vm.fetchCategories();
-        await vm.fetchProducts();
+        await Promise.all([vm.fetchCategories(), vm.fetchProducts()]);
 
         // Randomize flash sales after products are loaded
         if (vm.allProducts?.length) {
