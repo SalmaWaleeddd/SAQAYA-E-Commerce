@@ -39,12 +39,15 @@ const mutations = {
 
   ADD_ITEM(state: CartState, item: CartItem) {
     const existing = state.items.find((i) => i.productId === item.productId);
+
     if (existing) {
       existing.quantity += item.quantity;
       existing.totalPrice = existing.price * existing.quantity;
+      state.items = [...state.items];
     } else {
-      state.items.push(item);
+      state.items = [...state.items, item];
     }
+
     cartService.saveCart(state.items);
   },
 
@@ -52,17 +55,22 @@ const mutations = {
     state: CartState,
     { productId, quantity }: { productId: number; quantity: number },
   ) {
-    const item = state.items.find((i) => i.productId === productId);
-    if (item) {
-      if (quantity <= 0) {
-        // Remove item if quantity becomes 0
-        state.items = state.items.filter((i) => i.productId !== productId);
-      } else {
-        item.quantity = quantity;
-        item.totalPrice = item.price * quantity;
-      }
-      cartService.saveCart(state.items);
+    const itemIndex = state.items.findIndex((i) => i.productId === productId);
+
+    if (itemIndex === -1) return;
+
+    if (quantity <= 0) {
+      state.items = state.items.filter((i) => i.productId !== productId);
+    } else {
+      const item = state.items[itemIndex];
+
+      item.quantity = quantity;
+      item.totalPrice = item.price * quantity;
+
+      state.items = [...state.items];
     }
+
+    cartService.saveCart(state.items);
   },
 
   REMOVE_ITEM(state: CartState, productId: number) {
