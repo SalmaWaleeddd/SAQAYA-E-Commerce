@@ -15,7 +15,7 @@
 import { Product } from "@/types/product";
 import ProductCard from "./ProductCard.vue";
 import { PropType } from "vue";
-import { mapActions } from "vuex";
+import { mapActions, mapMutations } from "vuex";
 
 export default {
   name: "ProductList",
@@ -30,12 +30,14 @@ export default {
   },
   methods: {
     ...mapActions("cart", ["addToCart"]),
+    ...mapMutations("cart", ["OPEN_CART"]),
 
     handleAddToCart(product: Product) {
       (this as any).addToCart({
         product: product,
         quantity: 1,
       });
+      (this as any).OPEN_CART();
     },
   },
 };

@@ -1,18 +1,16 @@
-import {
-  CartState,
-  CartItem,
-  CartSummary,
-} from "@/types/cart";
+import { CartState, CartItem, CartSummary } from "@/types/cart";
 import { Product } from "@/types/product";
 import cartService from "@/services/cart.service";
 
 const state: CartState = {
+  isOpen: false,
   items: cartService.loadCart() || [],
   loading: false,
   error: null,
 };
 
 const getters = {
+  cartOpen: (state: CartState): boolean => state.isOpen,
   cartItems: (state: CartState): CartItem[] => state.items,
   cartItemCount: (state: CartState): number => {
     return state.items.reduce((sum, item) => sum + item.quantity, 0);
@@ -25,6 +23,15 @@ const getters = {
 };
 
 const mutations = {
+  OPEN_CART(state: CartState) {
+    state.isOpen = true;
+  },
+  CLOSE_CART(state: CartState) {
+    state.isOpen = false;
+  },
+  TOGGLE_CART(state: CartState) {
+    state.isOpen = !state.isOpen;
+  },
   SET_ITEMS(state: CartState, items: CartItem[]) {
     state.items = items;
     cartService.saveCart(items);
@@ -102,7 +109,7 @@ const actions = {
   },
 };
 
-export default{
+export default {
   namespaced: true,
   state,
   getters,

@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapMutations } from "vuex";
 import { Product } from "@/types/product";
 import BaseButton from "@/components/ui/BaseButton.vue";
 import ProductGallery from "@/components/product/ProductGallery.vue";
@@ -92,6 +92,7 @@ export default {
   methods: {
     ...mapActions("products", ["fetchProductById", "clearCurrentProduct"]),
     ...mapActions("cart", ["addToCart"]),
+    ...mapMutations("cart", ["OPEN_CART"]),
 
     async loadProduct(): Promise<void> {
       const productId = parseInt((this as any).id, 10);
@@ -136,7 +137,7 @@ export default {
         quantity: payload.quantity,
       });
 
-      (this as any).$root.$emit("open-cart-sidebar");
+      (this as any).OPEN_CART();
     },
 
     handleBuyNow(payload: { product: Product; quantity: number }): void {
@@ -145,7 +146,7 @@ export default {
         quantity: payload.quantity,
       });
 
-      (this as any).$root.$emit("open-cart-sidebar");
+      (this as any).OPEN_CART();
     },
 
     retryLoad(): void {

@@ -1,10 +1,10 @@
 <template>
   <div>
     <!-- Overlay -->
-    <div v-if="isOpen" class="cart-sidebar__overlay" @click="closeCart"></div>
+    <div v-if="cartIsOpen " class="cart-sidebar__overlay" @click="closeCart"></div>
 
     <!-- Sidebar -->
-    <div class="cart-sidebar" :class="{ 'cart-sidebar--open': isOpen }">
+    <div class="cart-sidebar" :class="{ 'cart-sidebar--open': cartIsOpen }">
       <div class="cart-sidebar__header">
         <h1 class="cart-sidebar__title">Shopping Cart</h1>
         <img
@@ -95,7 +95,7 @@
 </template>
 
 <script lang="ts">
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 import CartItem from "@/components/cart/CartItem.vue";
 import BaseButton from "@/components/ui/BaseButton.vue";
 import { formatPrice } from "@/utils/stringUtils";
@@ -108,13 +108,13 @@ export default {
     CartItem,
     BaseButton,
   },
-  data() {
-    return {
-      isOpen: false,
-    };
-  },
   computed: {
-    ...mapGetters("cart", ["cartItems", "cartSummary"]),
+    ...mapGetters("cart", ["cartItems", "cartSummary", "cartOpen"]),
+
+    /* TODO: Remove (it is not right right?) */
+    cartIsOpen(): boolean {
+      return (this as any).cartOpen;
+    },
 
     typedCartItems(): CartItemType[] {
       const items = (this as any).cartItems;
@@ -137,30 +137,37 @@ export default {
 
     freeShippingProgress(): number {
       if ((this as any).qualifiesForFreeShipping) return 100;
-      return ((this as any).typedCartSummary.subtotal / FREE_SHIPPING_THRESHOLD) * 100;
+      return (
+        ((this as any).typedCartSummary.subtotal / FREE_SHIPPING_THRESHOLD) *
+        100
+      );
     },
   },
   methods: {
     formatPrice,
 
     ...mapActions("cart", ["updateQuantity", "removeItem", "clearCart"]),
+    ...mapMutations("cart", ["OPEN_CART", "CLOSE_CART"]),
 
-    handleUpdateQuantity(payload: { productId: number; quantity: number }): void {
+    openCart(): void {
+      (this as any).OPEN_CART();
+      document.body.style.overflow = "hidden";
+    },
+
+    closeCart(): void {
+      (this as any).CLOSE_CART();
+      document.body.style.overflow = "";
+    },
+
+    handleUpdateQuantity(payload: {
+      productId: number;
+      quantity: number;
+    }): void {
       (this as any).updateQuantity(payload);
     },
 
     handleRemoveItem(productId: number): void {
       (this as any).removeItem(productId);
-    },
-
-    openCart(): void {
-      (this as any).isOpen = true;
-      document.body.style.overflow = "hidden";
-    },
-
-    closeCart(): void {
-      (this as any).isOpen = false;
-      document.body.style.overflow = "";
     },
 
     async handleCheckout(): Promise<void> {
@@ -175,12 +182,6 @@ export default {
         alert("Failed to place order. Please try again.");
       }
     },
-  },
-  mounted() {
-    (this as any).$root.$on("open-cart-sidebar", (this as any).openCart);
-  },
-  beforeDestroy() {
-    (this as any).$root.$off("open-cart-sidebar", (this as any).openCart);
   },
 };
 </script>

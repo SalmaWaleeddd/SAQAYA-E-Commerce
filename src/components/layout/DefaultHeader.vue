@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 import { NAV_ITEMS } from "@/constants/layout";
 
 export default {
@@ -76,6 +76,7 @@ export default {
   },
 
   methods: {
+    ...mapMutations("cart", ["OPEN_CART"]),
     handleSearch() {
       if (this.searchQuery.trim()) {
         /* TODO: Implement search functionality */
@@ -88,7 +89,7 @@ export default {
     },
 
     openCartSidebar() {
-      this.$emit("open-cart-sidebar");
+      this.OPEN_CART();
     },
   },
 
