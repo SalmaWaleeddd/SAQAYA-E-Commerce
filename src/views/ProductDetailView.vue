@@ -46,6 +46,7 @@ import ProductGallery from "@/components/product/ProductGallery.vue";
 import ProductDetails from "@/components/product/ProductDetails.vue";
 import ProductList from "@/components/product/ProductList.vue";
 import SectionHeader from "@/components/common/SectionHeader.vue";
+import productService from "@/services/product.service";
 
 export default {
   name: "ProductDetailView",
@@ -116,8 +117,6 @@ export default {
       currentProductId: number,
     ): Promise<void> {
       try {
-        const productService = (await import("@/services/product.service"))
-          .default;
         const response = await productService.getProductsByCategory(
           category,
           5,
