@@ -67,9 +67,11 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { formatPrice } from "@/utils/stringUtils";
 import BaseButton from "../ui/BaseButton.vue";
+import { Product } from "@/types/product";
+import { PropType } from "vue";
 
 export default {
   name: "ProductCard",
@@ -78,16 +80,13 @@ export default {
   },
   props: {
     product: {
-      type: Object,
+      type: Object as PropType<Product>,
       required: true,
-      validator: (value) => {
-        return value && value.title && value.price !== undefined;
-      },
     },
   },
   computed: {
     hasDiscount() {
-      return !!(this.product.discountPercentage || this.product.salePrice);
+      return !!this.product.discountPercentage;
     },
   },
   methods: {
@@ -106,13 +105,7 @@ export default {
     },
 
     getReviewCount() {
-      if (typeof this.product.reviews === "number") {
-        return this.product.reviews;
-      }
-      if (Array.isArray(this.product.reviews)) {
-        return this.product.reviews.length;
-      }
-      return 0;
+      return this.product.rating;
     },
 
     handleAddToCart() {
