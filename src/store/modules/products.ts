@@ -1,6 +1,11 @@
 // store/modules/products.ts
 import productService from "@/services/product.service";
-import { ProductsState, Product, ProductsResponse, ProductFilters } from "@/types/product";
+import {
+  ProductsState,
+  Product,
+  ProductsResponse,
+  ProductFilters,
+} from "@/types/product";
 
 const state: ProductsState = {
   items: [],
@@ -98,6 +103,16 @@ const mutations = {
 
   SET_CURRENT_PRODUCT(state: ProductsState, product: Product | null) {
     state.currentProduct = product;
+  },
+
+  UPDATE_ITEM_STOCK(
+    state: ProductsState,
+    { productId, newStock }: { productId: number; newStock: number },
+  ) {
+    const item = state.items.find((p) => p.id === productId);
+    if (item) {
+      item.stock = newStock;
+    }
   },
 
   SET_ERROR(state: ProductsState, error: string | null) {
@@ -258,20 +273,13 @@ const actions = {
     { state, commit }: { state: ProductsState; commit: any },
     { productId, quantity }: { productId: number; quantity: number },
   ) {
-    const updatedItems = state.items.map((product) => {
-      if (product.id === productId) {
-        return { ...product, stock: (product as any).stock - quantity };
-      }
-      return product;
+    commit("UPDATE_ITEM_STOCK", {
+      productId,
+      newStock:
+        (state.items.find((p) => p.id === productId) as any)?.stock - quantity,
     });
 
-    commit("SET_PRODUCTS", {
-      products: updatedItems,
-      total: state.pagination.total,
-      limit: state.pagination.limit,
-      skip: state.pagination.skip - state.pagination.limit,
-    });
-
+    // If the current product is the one being updated, adjust it too
     if (state.currentProduct?.id === productId) {
       const updatedCurrent = {
         ...state.currentProduct,
