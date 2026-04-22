@@ -1,19 +1,13 @@
 <template>
-  <app-layout>
+  <div id="app">
+    <DefaultLayout />
     <!-- Router view will render different pages based on the route -->
     <router-view />
-  </app-layout>
+  </div>
 </template>
 
-<script>
-import  DefaultLayout  from "@/components/layout/DefaultLayout.vue";
-
-export default {
-  name: "App",
-  components: {
-    "app-layout": DefaultLayout,
-  },
-};
+<script setup lang="ts">
+import DefaultLayout from "@/components/layout/DefaultLayout.vue";
 </script>
 
 <style lang="scss">
