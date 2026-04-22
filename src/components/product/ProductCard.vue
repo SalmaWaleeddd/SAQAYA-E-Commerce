@@ -67,57 +67,53 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed } from "vue";
+import { useRouter } from "vue-router";
 import { formatPrice } from "@/utils/stringUtils";
 import BaseButton from "../ui/BaseButton.vue";
-import { Product } from "@/types/product";
-import { PropType } from "vue";
+import type { Product } from "@/types/product";
 
-export default {
-  name: "ProductCard",
-  components: {
-    BaseButton,
-  },
-  props: {
-    product: {
-      type: Object as PropType<Product>,
-      required: true,
-    },
-  },
-  computed: {
-    hasDiscount() {
-      return !!this.product.discountPercentage;
-    },
-  },
-  methods: {
-    formatPrice,
+// Props
+interface Props {
+  product: Product;
+}
 
-    getSalePrice() {
-      if (this.product.discountPercentage) {
-        return this.product.price * (1 - this.product.discountPercentage / 100);
-      }
-      return this.product.price;
-    },
+const props = defineProps<Props>();
 
-    getRating() {
-      const rating = this.product.rating || 0;
-      return Math.floor(rating);
-    },
+const emit = defineEmits(['add-to-cart']);
 
-    getReviewCount() {
-      return this.product.rating;
-    },
+// Router
+const router = useRouter();
 
-    handleAddToCart() {
-      this.$emit("add-to-cart", this.product);
-    },
+// Computed properties
+const hasDiscount = computed(() => !!props.product.discountPercentage);
 
-    goToProductDetail() {
-      this.$router.push(`/products/${this.product.id}`);
-      window.scrollTo(0, 0);
-    },
-  },
-};
+// Methods
+function getSalePrice(): number {
+  if (props.product.discountPercentage) {
+    return props.product.price * (1 - props.product.discountPercentage / 100);
+  }
+  return props.product.price;
+}
+
+function getRating(): number {
+  const rating = props.product.rating || 0;
+  return Math.floor(rating);
+}
+
+function getReviewCount(): number {
+  return props.product.rating;
+}
+
+function handleAddToCart(): void {
+  emit("add-to-cart", props.product);
+}
+
+function goToProductDetail(): void {
+  router.push(`/products/${props.product.id}`);
+  window.scrollTo(0, 0);
+}
 </script>
 
 <style lang="scss" scoped>
