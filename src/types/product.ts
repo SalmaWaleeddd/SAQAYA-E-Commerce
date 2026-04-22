@@ -61,4 +61,5 @@ export interface ProductsState {
   filters: ProductFilters;
   categories: string[];
   error: string | null;
+  loading: boolean;
 }
