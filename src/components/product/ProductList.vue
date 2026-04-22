@@ -11,37 +11,26 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { Product } from "@/types/product";
 import ProductCard from "./ProductCard.vue";
-import { PropType } from "vue";
-import { mapActions, mapMutations } from "vuex";
+import { useCartStore } from "@/stores/useCartStore";
 
-export default {
-  name: "ProductList",
-  components: {
-    ProductCard,
-  },
-  props: {
-    products: {
-      type: Array as PropType<Product[]>,
-      required: true,
-    },
-  },
-  methods: {
-    ...mapActions("cart", ["addToCart"]),
-    ...mapMutations("cart", ["OPEN_CART"]),
+// Props
+defineProps<{
+  products: Product[];
+}>();
 
-    handleAddToCart(product: Product) {
-      (this as any).addToCart({
-        product: product,
-        quantity: 1,
-      });
-      (this as any).OPEN_CART();
-    },
-  },
-};
+// Store
+const { addToCart, openCart } = useCartStore();
+
+// Methods
+function handleAddToCart(product: Product) {
+  addToCart(product, 1);
+  openCart();
+}
 </script>
+
 <style lang="scss" scoped>
 .product-list {
   &__container {
