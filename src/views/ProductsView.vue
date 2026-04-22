@@ -10,21 +10,21 @@
       </div>
 
       <!-- Products Count -->
-      <div v-if="totalProductsValue > 0" class="products-view__count">
-        Showing {{ productsList.length }} of {{ totalProductsValue }} products
+      <div v-if="totalProducts > 0" class="products-view__count">
+        Showing {{ allProducts.length }} of {{ totalProducts }} products
       </div>
 
       <!-- Products Grid -->
       <div
-        v-if="!isLoading && productsList.length > 0"
+        v-if="!isLoading && allProducts.length > 0"
         class="products-view__grid"
       >
-        <ProductList :products="productsList" />
+        <ProductList :products="allProducts" />
       </div>
 
       <!-- Loading State -->
       <div
-        v-if="isLoading && productsList.length === 0"
+        v-if="isLoading && allProducts.length === 0"
         class="products-view__loading"
       >
         <div class="loading__spinner"></div>
@@ -33,7 +33,7 @@
 
       <!-- Empty State -->
       <div
-        v-else-if="!isLoading && productsList.length === 0"
+        v-else-if="!isLoading && allProducts.length === 0"
         class="products-view__empty"
       >
         <p>No products found</p>
@@ -41,7 +41,7 @@
 
       <!-- Load More Button -->
       <div
-        v-if="hasMoreProducts && !isLoading && productsList.length > 0"
+        v-if="hasMore && !isLoading && allProducts.length > 0"
         class="products-view__load-more"
       >
         <BaseButton
@@ -56,103 +56,80 @@
   </div>
 </template>
 
-<script lang="ts">
-import { mapState, mapGetters, mapActions } from "vuex";
-import { Product, SortOption } from "@/types/product";
+<script setup lang="ts">
+import { ref } from "vue";
+import { storeToRefs } from "pinia";
+import { useProductsStore } from "@/stores/useProductStore";
+import { useCartStore } from "@/stores/useCartStore";
 import { SORT_OPTIONS } from "@/constants/products";
+import type { SortOption } from "@/types/product";
 import ProductList from "@/components/product/ProductList.vue";
 import ProductsSorting from "@/components/product/ProductsSorting.vue";
 import BaseButton from "@/components/ui/BaseButton.vue";
 
-interface ProductsViewData {
-  currentSort: string;
-  loadMoreLoading: boolean;
+// Stores
+const productsStore = useProductsStore();
+const cartStore = useCartStore();
+
+// Reactive state from products store
+const { allProducts, isLoading, hasMore, totalProducts } =
+  storeToRefs(productsStore);
+
+// Local state
+const currentSort = ref("default");
+const loadMoreLoading = ref(false);
+
+// Actions from products store
+const { fetchProducts, loadMore, applyFilters } = productsStore;
+
+// Actions from cart store
+const { addToCart, openCart } = cartStore;
+
+// Methods
+async function loadProducts() {
+  try {
+    await fetchProducts();
+  } catch (error) {
+    console.error("Failed to load products:", error);
+  }
 }
 
-export default {
-  name: "ProductsView",
-  components: {
-    ProductList,
-    ProductsSorting,
-    BaseButton,
-  },
-  data(): ProductsViewData {
-    return {
-      currentSort: "default",
-      loadMoreLoading: false,
-    };
-  },
-  computed: {
-    ...mapState("products", ["loading"]),
-    ...mapGetters("products", ["allProducts", "hasMore", "totalProducts"]),
+async function loadMoreProducts() {
+  if (loadMoreLoading.value || !hasMore.value) return;
 
-    isLoading(): boolean {
-      return (this as any).loading;
-    },
+  loadMoreLoading.value = true;
+  try {
+    await loadMore();
+  } catch (error) {
+    console.error("Failed to load more products:", error);
+  } finally {
+    loadMoreLoading.value = false;
+  }
+}
 
-    productsList(): Product[] {
-      return (this as any).allProducts || [];
-    },
+async function handleSortChange(sortValue: string) {
+  currentSort.value = sortValue;
 
-    hasMoreProducts(): boolean {
-      return (this as any).hasMore;
-    },
+  const selectedOption = SORT_OPTIONS.find(
+    (option: SortOption) => option.value === sortValue
+  );
 
-    totalProductsValue(): number {
-      return (this as any).totalProducts;
-    },
-  },
-  methods: {
-    ...mapActions("products", ["fetchProducts", "loadMore", "applyFilters"]),
-    ...mapActions("cart", ["addToCart"]),
+  if (selectedOption && selectedOption.value !== "default") {
+    await applyFilters({
+      sortBy: selectedOption.sortBy,
+      order: selectedOption.order,
+    });
+  } else {
+    // Reset sorting (default)
+    await applyFilters({
+      sortBy: null,
+      order: null,
+    });
+  }
+}
 
-    async loadProducts(): Promise<void> {
-      try {
-        await (this as any).fetchProducts();
-      } catch (error) {
-        console.error("Failed to load products:", error);
-      }
-    },
-
-    async loadMoreProducts(): Promise<void> {
-      if ((this as any).loadMoreLoading || !(this as any).hasMoreProducts)
-        return;
-
-      (this as any).loadMoreLoading = true;
-      try {
-        await (this as any).loadMore();
-      } catch (error) {
-        console.error("Failed to load more products:", error);
-      } finally {
-        (this as any).loadMoreLoading = false;
-      }
-    },
-
-    async handleSortChange(sortValue: string): Promise<void> {
-      (this as any).currentSort = sortValue;
-
-      const selectedOption = SORT_OPTIONS.find(
-        (option: SortOption) => option.value === sortValue,
-      );
-
-      if (selectedOption && selectedOption.value !== "default") {
-        await (this as any).applyFilters({
-          sortBy: selectedOption.sortBy,
-          order: selectedOption.order,
-        });
-      } else {
-        // Reset sorting (default)
-        await (this as any).applyFilters({
-          sortBy: null,
-          order: null,
-        });
-      }
-    },
-  },
-  mounted() {
-    (this as any).loadProducts();
-  },
-};
+// Initial load
+loadProducts();
 </script>
 
 <style lang="scss" scoped>
