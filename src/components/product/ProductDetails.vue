@@ -109,103 +109,91 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Product } from "@/types/product";
+<script setup lang="ts">
+import { ref, computed, watch } from "vue";
 import { formatCategoryName, formatPrice } from "@/utils/stringUtils";
 import BaseButton from "@/components/ui/BaseButton.vue";
+import type { Product } from "@/types/product";
 
-export default {
-  name: "ProductDetails",
-  components: {
-    BaseButton,
+// Props
+interface Props {
+  product: Product;
+}
+
+const props = defineProps<Props>();
+
+// Emits
+interface Emits {
+  (e: "buy-now", payload: { product: Product; quantity: number }): void;
+}
+
+const emit = defineEmits<Emits>();
+
+// Local state
+const quantity = ref(1);
+const postalCode = ref("");
+
+// Computed properties
+const hasDiscount = computed(() => {
+  return !!(
+    props.product.discountPercentage && props.product.discountPercentage > 0
+  );
+});
+
+const isInStock = computed(() => {
+  return props.product.stock > 0;
+});
+
+const maxQuantity = computed(() => {
+  return props.product.stock || 999;
+});
+
+// Watch to ensure quantity doesn't exceed maxQuantity
+watch(
+  maxQuantity,
+  (newMax) => {
+    if (quantity.value > newMax) {
+      quantity.value = newMax;
+    }
   },
-  props: {
-    product: {
-      type: Object as () => Product,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      quantity: 1,
-      postalCode: "",
-    };
-  },
-  computed: {
-    hasDiscount(): boolean {
-      return !!(
-        (this as any).product.discountPercentage &&
-        (this as any).product.discountPercentage > 0
-      );
-    },
+  { immediate: true },
+);
 
-    isInStock(): boolean {
-      return (this as any).product.stock > 0;
-    },
+// Methods
+function getSalePrice(): number {
+  if (props.product.discountPercentage) {
+    return props.product.price * (1 - props.product.discountPercentage / 100);
+  }
+  return props.product.price;
+}
 
-    maxQuantity(): number {
-      return (this as any).product.stock || 999;
-    },
-  },
-  watch: {
-    maxQuantity: {
-      handler(newMax: number) {
-        if ((this as any).quantity > newMax) {
-          (this as any).quantity = newMax;
-        }
-      },
-      immediate: true,
-    },
-  },
-  methods: {
-    formatPrice,
-    formatCategoryName,
+function getRating(): number {
+  return props.product.rating || 0;
+}
 
-    getSalePrice(): number {
-      if ((this as any).product.discountPercentage) {
-        return (
-          (this as any).product.price *
-          (1 - (this as any).product.discountPercentage / 100)
-        );
-      }
-      return (this as any).product.price;
-    },
+function getReviewCount(): number {
+  const reviews = props.product.rating;
+  return reviews;
+}
 
-    getRating(): number {
-      return (this as any).product.rating || 0;
-    },
+function increment(): void {
+  if (quantity.value < maxQuantity.value) {
+    quantity.value++;
+  }
+}
 
-    getReviewCount(): number {
-      const reviews = (this as any).product.reviews;
-      if (typeof reviews === "number") {
-        return reviews;
-      }
-      if (Array.isArray(reviews)) {
-        return reviews.length;
-      }
-      return 0;
-    },
+function decrement(): void {
+  if (quantity.value > 1) {
+    quantity.value--;
+  }
+}
 
-    increment() {
-      if ((this as any).quantity < (this as any).maxQuantity) {
-        (this as any).quantity++;
-      }
-    },
-
-    decrement() {
-      if ((this as any).quantity > 1) {
-        (this as any).quantity--;
-      }
-    },
-
-    handleBuyNow() {
-      (this as any).$emit("buy-now", {
-        product: (this as any).product,
-        quantity: (this as any).quantity,
-      });
-    },
-  },
-};
+function handleBuyNow(): void {
+  emit("buy-now", {
+    product: props.product,
+    quantity: quantity.value,
+  });
+}
 </script>
 
 <style lang="scss" scoped>
@@ -277,12 +265,12 @@ export default {
   }
 
   &__star {
-    color: #e0e0e0; // Light gray for empty stars (not black)
+    color: #e0e0e0;
     font-size: 20px;
     transition: color 0.2s ease;
 
     &--filled {
-      color: #ffad33; // Gold/yellow for filled stars
+      color: #ffad33;
     }
   }
 
