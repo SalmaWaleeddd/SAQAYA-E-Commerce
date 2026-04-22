@@ -8,26 +8,26 @@
   </button>
 </template>
 
-<script>
-export default {
-  name: "BaseButton",
-  props: {
-    text: {
-      type: String,
-      default: "",
-    },
-    variant: {
-      type: String,
-      default: "primary",
-      validator: (value) => ["primary", "secondary", "outline"].includes(value),
-    },
-    fullWidth: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  emits: ["click"],
-};
+<script setup lang="ts">
+interface Props {
+  text?: string;
+  variant?: "primary" | "secondary" | "outline";
+  fullWidth?: boolean;
+}
+
+interface Emits {
+  (e: "click", event: MouseEvent): void;
+}
+
+// Props with defaults
+const props = withDefaults(defineProps<Props>(), {
+  text: "",
+  variant: "primary",
+  fullWidth: false,
+});
+
+// Emits
+const emit = defineEmits<Emits>();
 </script>
 
 <style lang="scss" scoped>
