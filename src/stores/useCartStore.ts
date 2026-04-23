@@ -2,7 +2,16 @@ import { defineStore } from 'pinia';
 import { CartItem, CartState, CartSummary } from '@/types/cart';
 import { Product } from '@/types/product';
 import cartService from '@/services/cart.service';
+import { FREE_SHIPPING_THRESHOLD } from '@/types/cart';
 
+// Helper functions outside store (truly private)
+function calculateSubtotal(items: CartItem[]): number {
+  return items.reduce((sum, item) => sum + item.totalPrice, 0);
+}
+
+function calculateTotalQuantity(items: CartItem[]): number {
+  return items.reduce((sum, item) => sum + item.quantity, 0);
+}
 
 export const useCartStore = defineStore('cart', {
   state: (): CartState => ({
@@ -15,14 +24,35 @@ export const useCartStore = defineStore('cart', {
   getters: {
     cartOpen: (state): boolean => state.isOpen,
     cartItems: (state): CartItem[] => state.items,
-    cartItemCount: (state): number => {
-      return state.items.reduce((sum, item) => sum + item.quantity, 0);
-    },
+    
+    // Base calculations using helper functions
+    subtotal: (state): number => calculateSubtotal(state.items),
+    totalQuantity: (state): number => calculateTotalQuantity(state.items),
+    
+    // Derived getters using base calculations
+    cartItemCount: (state): number => calculateTotalQuantity(state.items),
+    
     cartSummary: (state): CartSummary => {
       return cartService.calculateSummary(state.items);
     },
+    
     isLoading: (state): boolean => state.loading,
     error: (state): string | null => state.error,
+    
+    // Shipping-related getters using subtotal
+    qualifiesForFreeShipping(): boolean {
+      return cartService.calculateShipping(this.subtotal) === 0;
+    },
+    
+    freeShippingRemaining(): number {
+      if (this.subtotal >= FREE_SHIPPING_THRESHOLD) return 0;
+      return FREE_SHIPPING_THRESHOLD - this.subtotal;
+    },
+    
+    freeShippingProgress(): number {
+      if (this.subtotal >= FREE_SHIPPING_THRESHOLD) return 100;
+      return (this.subtotal / FREE_SHIPPING_THRESHOLD) * 100;
+    },
   },
 
   actions: {
