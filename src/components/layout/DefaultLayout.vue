@@ -1,6 +1,6 @@
 <template>
   <div class="layout">
-    <app-header />
+    <DefaultHeader />
 
     <!-- Add CartSidebar component -->
     <CartSidebar />
@@ -12,25 +12,15 @@
       </div>
     </main>
 
-    <app-footer />
+    <DefaultFooter />
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import DefaultHeader from "./DefaultHeader.vue";
 import DefaultFooter from "./DefaultFooter.vue";
 import CartSidebar from "@/components/cart/CartSidebar.vue";
-
-export default {
-  name: "DefaultLayout",
-
-  components: {
-    "app-header": DefaultHeader,
-    "app-footer": DefaultFooter,
-    BreadCrumb: () => import("@/components/common/BreadCrumb.vue"),
-    CartSidebar,
-  },
-};
+import BreadCrumb from "@/components/common/BreadCrumb.vue";
 </script>
 
 <style lang="scss" scoped>

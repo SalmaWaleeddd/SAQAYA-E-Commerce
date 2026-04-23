@@ -9,10 +9,9 @@
         :key="index"
         class="categories__grid__item"
       >
-        <!-- Placeholder icon - you can customize per category -->
         <div class="categories__img-wrapper">
-          <img 
-            :src="getCategoryIcon(category)" 
+          <img
+            :src="getCategoryIcon(category)"
             :alt="category"
             class="categories__img"
           />
@@ -23,62 +22,49 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import SectionHeader from "@/components/common/SectionHeader.vue";
 import { formatCategoryName } from "@/utils/stringUtils";
 
-export default {
-  name: "ProductCategories",
-  components: {
-    SectionHeader,
-  },
-  props: {
-    categories: {
-      type: Array,
-      required: true,
-      validator: (value) => {
-        // Accepts array of strings or array of objects
-        return Array.isArray(value);
-      },
-    },
-  },
-  methods: {
-    formatCategoryName,
-    
-    getCategoryIcon(category) {
-      // Map category names to icons (you can customize this)
-      const iconMap = {
-        "smartphones": "📱",
-        "laptops": "💻",
-        "furniture": "🪑",
-        "beauty": "💄",
-        "fragrances": "🌸",
-        "groceries": "🛒",
-        "home-decoration": "🏠",
-        "kitchen-accessories": "🍳",
-        "mens-shirts": "👕",
-        "mens-shoes": "👞",
-        "mens-watches": "⌚",
-        "womens-bags": "👜",
-        "womens-dresses": "👗",
-        "womens-jewellery": "💍",
-        "womens-shoes": "👠",
-        "womens-watches": "⌚",
-        "sports-accessories": "⚽",
-        "sunglasses": "🕶️",
-        "tablets": "📟",
-        "tops": "👚",
-        "vehicle": "🚗",
-        "motorcycle": "🏍️",
-        "skin-care": "🧴",
-        "mobile-accessories": "📱",
-      };
-      
-      // Return emoji icon or default
-      return iconMap[category] || "📦";
-    },
-  },
+// Props
+interface Props {
+  categories: string[];
+}
+
+defineProps<Props>();
+
+// Icon mapping
+const iconMap: Record<string, string> = {
+  smartphones: "📱",
+  laptops: "💻",
+  furniture: "🪑",
+  beauty: "💄",
+  fragrances: "🌸",
+  groceries: "🛒",
+  "home-decoration": "🏠",
+  "kitchen-accessories": "🍳",
+  "mens-shirts": "👕",
+  "mens-shoes": "👞",
+  "mens-watches": "⌚",
+  "womens-bags": "👜",
+  "womens-dresses": "👗",
+  "womens-jewellery": "💍",
+  "womens-shoes": "👠",
+  "womens-watches": "⌚",
+  "sports-accessories": "⚽",
+  sunglasses: "🕶️",
+  tablets: "📟",
+  tops: "👚",
+  vehicle: "🚗",
+  motorcycle: "🏍️",
+  "skin-care": "🧴",
+  "mobile-accessories": "📱",
 };
+
+// Methods
+function getCategoryIcon(category: string): string {
+  return iconMap[category] || "📦";
+}
 </script>
 
 <style lang="scss" scoped>
@@ -108,7 +94,7 @@ export default {
       }
     }
   }
-  
+
   &__img-wrapper {
     width: 50px;
     height: 50px;
@@ -116,14 +102,14 @@ export default {
     align-items: center;
     justify-content: center;
   }
-  
+
   &__img {
     width: 100%;
     height: 100%;
     object-fit: contain;
     font-size: 40px; // For emoji icons
   }
-  
+
   &__title {
     font-size: 16px;
     font-weight: 400;

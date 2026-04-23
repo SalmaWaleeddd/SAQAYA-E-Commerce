@@ -1,10 +1,10 @@
 <template>
   <div>
     <!-- Overlay -->
-    <div v-if="cartIsOpen " class="cart-sidebar__overlay" @click="closeCart"></div>
+    <div v-if="cartOpen" class="cart-sidebar__overlay" @click="closeCart"></div>
 
     <!-- Sidebar -->
-    <div class="cart-sidebar" :class="{ 'cart-sidebar--open': cartIsOpen }">
+    <div class="cart-sidebar" :class="{ 'cart-sidebar--open': cartOpen }">
       <div class="cart-sidebar__header">
         <h1 class="cart-sidebar__title">Shopping Cart</h1>
         <img
@@ -15,7 +15,7 @@
         />
       </div>
 
-      <div v-if="typedCartItems.length === 0" class="cart-sidebar__empty">
+      <div v-if="cartItems.length === 0" class="cart-sidebar__empty">
         <p>Your cart is empty</p>
         <BaseButton
           class="cart-sidebar__continue-btn"
@@ -30,7 +30,7 @@
         <!-- Cart Items -->
         <div class="cart-sidebar__items">
           <CartItem
-            v-for="item in typedCartItems"
+            v-for="item in cartItems"
             :key="item.productId"
             :item="item"
             @update-quantity="handleUpdateQuantity"
@@ -42,20 +42,20 @@
         <div class="cart-sidebar__summary">
           <div class="cart-sidebar__summary-row">
             <span>Subtotal:</span>
-            <span>{{ formatPrice(typedCartSummary.subtotal) }}</span>
+            <span>{{ formatPrice(cartSummary.subtotal) }}</span>
           </div>
 
           <div class="cart-sidebar__summary-row">
             <span>Shipping:</span>
             <span>
-              <span v-if="typedCartSummary.shipping === 0" class="free-shipping"
+              <span v-if="cartSummary.shipping === 0" class="free-shipping"
                 >Free</span
               >
-              <span v-else>{{ formatPrice(typedCartSummary.shipping) }}</span>
+              <span v-else>{{ formatPrice(cartSummary.shipping) }}</span>
             </span>
           </div>
 
-          <!-- Free shipping progress bar -->
+          <!-- Free shipping progress bar  -->
           <div
             v-if="!qualifiesForFreeShipping"
             class="cart-sidebar__free-shipping"
@@ -76,7 +76,7 @@
             class="cart-sidebar__summary-row cart-sidebar__summary-row--total"
           >
             <span>Total:</span>
-            <span>{{ formatPrice(typedCartSummary.total) }}</span>
+            <span>{{ formatPrice(cartSummary.total) }}</span>
           </div>
 
           <div class="cart-sidebar__actions">
@@ -94,96 +94,63 @@
   </div>
 </template>
 
-<script lang="ts">
-import { mapGetters, mapActions, mapMutations } from "vuex";
+<script setup lang="ts">
+import { watch } from "vue";
+import { useRouter } from "vue-router";
+import { storeToRefs } from "pinia";
+import { useCartStore } from "@/stores/useCartStore";
 import CartItem from "@/components/cart/CartItem.vue";
 import BaseButton from "@/components/ui/BaseButton.vue";
 import { formatPrice } from "@/utils/stringUtils";
-import { FREE_SHIPPING_THRESHOLD } from "@/types/cart";
-import { CartItem as CartItemType, CartSummary } from "@/types/cart";
 
-export default {
-  name: "CartSidebar",
-  components: {
-    CartItem,
-    BaseButton,
-  },
-  computed: {
-    ...mapGetters("cart", ["cartItems", "cartSummary", "cartOpen"]),
+const router = useRouter();
+const cartStore = useCartStore();
 
-    /* TODO: Remove (it is not right right?) */
-    cartIsOpen(): boolean {
-      return (this as any).cartOpen;
-    },
+const {
+  cartItems,
+  cartSummary,
+  cartOpen,
+  qualifiesForFreeShipping,
+  freeShippingRemaining,
+  freeShippingProgress,
+} = storeToRefs(cartStore);
 
-    typedCartItems(): CartItemType[] {
-      const items = (this as any).cartItems;
-      return items || [];
-    },
+// Actions
+const { updateQuantity, removeItem, clearCart, closeCart } = cartStore;
 
-    typedCartSummary(): CartSummary {
-      const summary = (this as any).cartSummary;
-      return summary || { subtotal: 0, shipping: 0, total: 0, itemCount: 0 };
-    },
+// Methods
+function handleUpdateQuantity(payload: {
+  productId: number;
+  quantity: number;
+}): void {
+  updateQuantity(payload.productId, payload.quantity);
+}
 
-    qualifiesForFreeShipping(): boolean {
-      return (this as any).typedCartSummary.subtotal >= FREE_SHIPPING_THRESHOLD;
-    },
+function handleRemoveItem(productId: number): void {
+  removeItem(productId);
+}
 
-    freeShippingRemaining(): number {
-      if ((this as any).qualifiesForFreeShipping) return 0;
-      return FREE_SHIPPING_THRESHOLD - (this as any).typedCartSummary.subtotal;
-    },
+async function handleCheckout(): Promise<void> {
+  try {
+    console.log("Order placed:", cartItems.value);
+    alert("Order placed successfully!");
+    await clearCart();
+    closeCart();
+    router.push("/");
+  } catch (error) {
+    console.error("Checkout failed:", error);
+    alert("Failed to place order. Please try again.");
+  }
+}
 
-    freeShippingProgress(): number {
-      if ((this as any).qualifiesForFreeShipping) return 100;
-      return (
-        ((this as any).typedCartSummary.subtotal / FREE_SHIPPING_THRESHOLD) *
-        100
-      );
-    },
-  },
-  methods: {
-    formatPrice,
-
-    ...mapActions("cart", ["updateQuantity", "removeItem", "clearCart"]),
-    ...mapMutations("cart", ["OPEN_CART", "CLOSE_CART"]),
-
-    openCart(): void {
-      (this as any).OPEN_CART();
-      document.body.style.overflow = "hidden";
-    },
-
-    closeCart(): void {
-      (this as any).CLOSE_CART();
-      document.body.style.overflow = "";
-    },
-
-    handleUpdateQuantity(payload: {
-      productId: number;
-      quantity: number;
-    }): void {
-      (this as any).updateQuantity(payload);
-    },
-
-    handleRemoveItem(productId: number): void {
-      (this as any).removeItem(productId);
-    },
-
-    async handleCheckout(): Promise<void> {
-      try {
-        console.log("Order placed:", (this as any).typedCartItems);
-        alert("Order placed successfully!");
-        await (this as any).clearCart();
-        (this as any).closeCart();
-        (this as any).$router.push("/");
-      } catch (error) {
-        console.error("Checkout failed:", error);
-        alert("Failed to place order. Please try again.");
-      }
-    },
-  },
-};
+// Watch cartOpen to control body scroll
+watch(cartOpen, (isOpen) => {
+  if (isOpen) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "";
+  }
+});
 </script>
 
 <style lang="scss" scoped>

@@ -24,100 +24,95 @@
   </div>
 </template>
 
-<script>
-import { mapState } from "vuex";
+<script setup lang="ts">
+import { ref, computed, watch } from "vue";
+import { useRoute } from "vue-router";
+import { storeToRefs } from "pinia";
+import { useProductsStore } from "@/stores/useProductStore";
+import { capitalizeFirstLetter } from "@/utils/stringUtils";
 
-export default {
-  name: "BreadCrumb",
-  data() {
-    return {
-      breadcrumbs: [],
-      productName: null,
-    };
+interface Breadcrumb {
+  name: string;
+  path: string;
+  originalSegment: string;
+}
+
+const route = useRoute();
+const productsStore = useProductsStore();
+const currentProduct = computed(() => productsStore.$state.currentProduct);
+const error = computed(() => productsStore.$state.error);
+const categories = computed(() => productsStore.$state.categories);
+
+const breadcrumbs = ref<Breadcrumb[]>([]);
+
+const isHomePage = computed(() => route.path === "/");
+
+function isProductId(segment: string): boolean {
+  return /^\d+$/.test(segment);
+}
+
+function formatName(segment: string): string {
+  if (segment === "404-error") {
+    return "404 Error";
+  }
+  if (segment === "product") {
+    return "Product";
+  }
+  if (isProductId(segment)) {
+    return "Loading...";
+  }
+  let name = segment.replace(/-/g, " ");
+  name = capitalizeFirstLetter(name);
+  return name;
+}
+
+function getProductName(productId: string): string {
+  const id = parseInt(productId, 10);
+  if (currentProduct.value && currentProduct.value.id === id) {
+    return currentProduct.value.title;
+  }
+  return `Product ${productId}`;
+}
+
+async function generateBreadcrumbs() {
+  const path = route.path;
+  const segments = path.split("/").filter((segment) => segment);
+
+  const newBreadcrumbs: Breadcrumb[] = [];
+  let currentPath = "";
+
+  for (let i = 0; i < segments.length; i++) {
+    const segment = segments[i];
+    currentPath += `/${segment}`;
+
+    let displayName = formatName(segment);
+
+    if (isProductId(segment)) {
+      displayName = getProductName(segment);
+    }
+
+    newBreadcrumbs.push({
+      name: displayName,
+      path: currentPath,
+      originalSegment: segment,
+    });
+  }
+
+  breadcrumbs.value = newBreadcrumbs;
+}
+
+function isLast(index: number): boolean {
+  return index === breadcrumbs.value.length - 1;
+}
+
+// Watch for route changes
+watch(
+  () => route.path,
+  () => {
+    generateBreadcrumbs();
   },
-  computed: {
-    isHomePage() {
-      return this.$route.path === "/";
-    },
-    ...mapState("products", {
-      currentProduct: (state) => state.currentProduct,
-    }),
-  },
-  watch: {
-    $route: {
-      handler() {
-        this.generateBreadcrumbs();
-      },
-      immediate: true,
-    },
-  },
-  methods: {
-    async generateBreadcrumbs() {
-      const path = this.$route.path;
-      const segments = path.split("/").filter((segment) => segment);
-
-      const breadcrumbs = [];
-      let currentPath = "";
-
-      for (let i = 0; i < segments.length; i++) {
-        const segment = segments[i];
-        currentPath += `/${segment}`;
-
-        let displayName = this.formatName(segment);
-
-        // Check if this is a product ID segment (numeric)
-        if (this.isProductId(segment)) {
-          displayName = await this.getProductName(segment);
-        }
-
-        breadcrumbs.push({
-          name: displayName,
-          path: currentPath,
-          originalSegment: segment,
-        });
-      }
-
-      this.breadcrumbs = breadcrumbs;
-    },
-
-    isProductId(segment) {
-      // Check if segment is a number (product ID)
-      return /^\d+$/.test(segment);
-    },
-
-    getProductName(productId) {
-      // If currentProduct matches, return its title
-      if (this.currentProduct && this.currentProduct.id === productId) {
-        return this.currentProduct.title;
-      }
-
-      // Fallback: if no match, just return a placeholder
-      return `Product ${productId}`;
-    },
-
-    formatName(segment) {
-      if (segment === "404-error") {
-        return "404 Error";
-      }
-
-      if (segment === "product") {
-        return "Product";
-      }
-
-      if (this.isProductId(segment)) {
-        return "Loading..."; // Temporary text while fetching
-      }
-
-      let name = segment.replace(/-/g, " ");
-      name = name.charAt(0).toUpperCase() + name.slice(1);
-      return name;
-    },
-
-    isLast(index) {
-      return index === this.breadcrumbs.length - 1;
-    },
-  },
-};
+  { immediate: true },
+);
 </script>
 
 <style lang="scss" scoped>

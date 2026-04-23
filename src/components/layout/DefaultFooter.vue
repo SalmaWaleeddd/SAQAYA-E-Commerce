@@ -101,38 +101,41 @@
   </footer>
 </template>
 
-<script>
+<script setup lang="ts">
+import { ref } from "vue";
 import { ACCOUNT_LINKS, QUICK_LINKS } from "@/constants/layout";
-export default {
-  name: "DefaultFooter",
 
-  data() {
-    return {
-      email: "",
-      accountLinks: ACCOUNT_LINKS,
-      quickLinks: QUICK_LINKS,
-    };
-  },
+interface Link {
+  to: string;
+  text: string;
+}
 
-  methods: {
-    handleSubscribe() {
-      if (this.email && this.isValidEmail(this.email)) {
-        console.log("Subscribing email:", this.email);
-        this.$emit("subscribe", this.email);
-        this.email = "";
-        // You can add a success message or API call here
-      } else if (this.email) {
-        console.log("Invalid email address");
-        this.$emit("error", "Please enter a valid email address");
-      }
-    },
+const email = ref("");
+const accountLinks = ref<Link[]>(ACCOUNT_LINKS);
+const quickLinks = ref<Link[]>(QUICK_LINKS);
 
-    isValidEmail(email) {
-      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return regex.test(email);
-    },
-  },
-};
+interface Emits {
+  (e: "subscribe", email: string): void;
+  (e: "error", message: string): void;
+}
+
+const emit = defineEmits<Emits>();
+
+function isValidEmail(email: string): boolean {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}
+
+function handleSubscribe(): void {
+  if (email.value && isValidEmail(email.value)) {
+    console.log("Subscribing email:", email.value);
+    emit("subscribe", email.value);
+    email.value = "";
+  } else if (email.value) {
+    console.log("Invalid email address");
+    emit("error", "Please enter a valid email address");
+  }
+}
 </script>
 
 <style lang="scss" scoped>

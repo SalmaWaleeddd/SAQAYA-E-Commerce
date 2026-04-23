@@ -35,42 +35,45 @@
   </div>
 </template>
 
-<script lang="ts">
-import { CartItem } from "@/types/cart";
+<script setup lang="ts">
+import type { CartItem as CartItemType } from "@/types/cart";
 import { formatPrice } from "@/utils/stringUtils";
 
-export default {
-  name: "CartItem",
-  props: {
-    item: {
-      type: Object as () => CartItem,
-      required: true,
-    },
-  },
-  methods: {
-    formatPrice,
+// Props
+interface Props {
+  item: CartItemType;
+}
 
-    increment() {
-      (this as any).$emit("update-quantity", {
-        productId: (this as any).item.productId,
-        quantity: (this as any).item.quantity + 1,
-      });
-    },
+const props = defineProps<Props>();
 
-    decrement() {
-      if ((this as any).item.quantity > 1) {
-        (this as any).$emit("update-quantity", {
-          productId: (this as any).item.productId,
-          quantity: (this as any).item.quantity - 1,
-        });
-      }
-    },
+// Emits
+interface Emits {
+  (e: "update-quantity", payload: { productId: number; quantity: number }): void;
+  (e: "remove", productId: number): void;
+}
 
-    remove() {
-      (this as any).$emit("remove", (this as any).item.productId);
-    },
-  },
-};
+const emit = defineEmits<Emits>();
+
+// Methods
+function increment(): void {
+  emit("update-quantity", {
+    productId: props.item.productId,
+    quantity: props.item.quantity + 1,
+  });
+}
+
+function decrement(): void {
+  if (props.item.quantity > 1) {
+    emit("update-quantity", {
+      productId: props.item.productId,
+      quantity: props.item.quantity - 1,
+    });
+  }
+}
+
+function remove(): void {
+  emit("remove", props.item.productId);
+}
 </script>
 
 <style lang="scss" scoped>
@@ -155,8 +158,6 @@ export default {
     padding: 0.25rem 0.5rem;
     background-color: transparent;
 
-   
-    
     &-controls {
       display: flex;
       flex-direction: column;

@@ -1,4 +1,3 @@
-<!-- DefaultHeader.vue -->
 <template>
   <header class="header">
     <div class="header__container">
@@ -53,52 +52,49 @@
   </header>
 </template>
 
-<script>
-import { mapGetters, mapMutations } from "vuex";
+<script setup lang="ts">
+import { ref, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { storeToRefs } from "pinia";
+import { useCartStore } from "@/stores/useCartStore";
 import { NAV_ITEMS } from "@/constants/layout";
 
-export default {
-  name: "DefaultHeader",
+interface NavItem {
+  path: string;
+  name: string;
+}
 
-  data() {
-    return {
-      navItems: NAV_ITEMS,
-      searchQuery: "",
-    };
-  },
+const router = useRouter();
+const route = useRoute();
+const cartStore = useCartStore();
 
-  computed: {
-    ...mapGetters("cart", ["cartItemCount"]),
+const navItems = ref<NavItem[]>(NAV_ITEMS);
+const searchQuery = ref("");
 
-    cartItemsCount() {
-      return this.cartItemCount;
-    },
-  },
+const { cartItemCount } = storeToRefs(cartStore);
+const cartItemsCount = cartItemCount;
 
-  methods: {
-    ...mapMutations("cart", ["OPEN_CART"]),
-    handleSearch() {
-      if (this.searchQuery.trim()) {
-        /* TODO: Implement search functionality */
-        console.log("Searching for:", this.searchQuery);
-        this.$router.push({
-          path: "/search",
-          query: { q: this.searchQuery },
-        });
-      }
-    },
+function handleSearch(): void {
+  if (searchQuery.value.trim()) {
+    console.log("Searching for:", searchQuery.value);
+    router.push({
+      path: "/search",
+      query: { q: searchQuery.value },
+    });
+  }
+}
 
-    openCartSidebar() {
-      this.OPEN_CART();
-    },
-  },
+function openCartSidebar(): void {
+  cartStore.openCart();
+}
 
-  watch: {
-    $route() {
-      this.searchQuery = "";
-    },
-  },
-};
+// Watch for route changes to clear search
+watch(
+  () => route.path,
+  () => {
+    searchQuery.value = "";
+  }
+);
 </script>
 
 <style lang="scss" scoped>

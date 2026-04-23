@@ -37,127 +37,93 @@
   </div>
 </template>
 
-<script lang="ts">
-import { mapState, mapActions, mapMutations } from "vuex";
-import { Product } from "@/types/product";
+<script setup lang="ts">
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { useRouter } from "vue-router";
+import { storeToRefs } from "pinia";
+import { useProductsStore } from "@/stores/useProductStore";
+import { useCartStore } from "@/stores/useCartStore";
+import type { Product } from "@/types/product";
+import productService from "@/services/product.service";
 import BaseButton from "@/components/ui/BaseButton.vue";
 import ProductGallery from "@/components/product/ProductGallery.vue";
 import ProductDetails from "@/components/product/ProductDetails.vue";
 import ProductList from "@/components/product/ProductList.vue";
 import SectionHeader from "@/components/common/SectionHeader.vue";
-import productService from "@/services/product.service";
 
-export default {
-  name: "ProductDetailView",
-  components: {
-    BaseButton,
-    ProductGallery,
-    ProductDetails,
-    ProductList,
-    SectionHeader,
-  },
-  props: {
-    id: {
-      type: String,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      relatedProducts: [] as Product[],
-    };
-  },
-  computed: {
-    ...mapState("products", {
-      storeLoading: (state: any) => state.loading,
-      storeError: (state: any) => state.error,
-    }),
+// Props
+interface Props {
+  id: string;
+}
 
-    isLoading(): boolean {
-      return (this as any).storeLoading;
-    },
+const props = defineProps<Props>();
 
-    hasError(): boolean {
-      return !!(this as any).storeError;
-    },
+// Router
+const router = useRouter();
 
-    errorMessage(): string {
-      return (this as any).storeError || "Failed to load product details";
-    },
+// Stores
+const productsStore = useProductsStore();
+const cartStore = useCartStore();
 
-    product(): Product | null {
-      return (this as any).$store.state.products.currentProduct;
-    },
-  },
-  methods: {
-    ...mapActions("products", ["fetchProductById", "clearCurrentProduct"]),
-    ...mapActions("cart", ["addToCart"]),
-    ...mapMutations("cart", ["OPEN_CART"]),
+// Reactive state from products store
+const { isLoading, error, currentProduct } = storeToRefs(productsStore);
 
-    async loadProduct(): Promise<void> {
-      const productId = parseInt((this as any).id, 10);
-      if (isNaN(productId)) {
-        (this as any).$router.push("/");
-        return;
-      }
+// Local state
+const relatedProducts = ref<Product[]>([]);
 
-      try {
-        const product = await (this as any).fetchProductById(productId);
-        if (product && product.category) {
-          await (this as any).loadRelatedProducts(product.category, product.id);
-        }
-      } catch (err) {
-        console.error("Failed to load product:", err);
-      }
-    },
+// Computed
+const hasError = computed(() => !!error.value);
+const errorMessage = computed(() => error.value || "Failed to load product details");
+const product = computed(() => currentProduct.value);
 
-    async loadRelatedProducts(
-      category: string,
-      currentProductId: number,
-    ): Promise<void> {
-      try {
-        const response = await productService.getProductsByCategory(
-          category,
-          5,
-        );
+// Methods
+async function loadRelatedProducts(category: string, currentProductId: number) {
+  try {
+    const response = await productService.getProductsByCategory(category, 5);
+    
+    relatedProducts.value = response.products
+      .filter((p: Product) => p.id !== currentProductId)
+      .slice(0, 4);
+  } catch (err) {
+    console.error("Failed to load related products:", err);
+  }
+}
 
-        (this as any).relatedProducts = response.products
-          .filter((p: Product) => p.id !== currentProductId)
-          .slice(0, 4);
-      } catch (err) {
-        console.error("Failed to load related products:", err);
-      }
-    },
+async function loadProduct() {
+  const productId = parseInt(props.id, 10);
+  
+  if (isNaN(productId)) {
+    router.push("/");
+    return;
+  }
 
-    handleAddToCart(payload: { product: Product; quantity: number }): void {
-      (this as any).addToCart({
-        product: payload.product,
-        quantity: payload.quantity,
-      });
+  try {
+    const product = await productsStore.fetchProductById(productId);
+    if (product && product.category) {
+      await loadRelatedProducts(product.category, product.id);
+    }
+  } catch (err) {
+    console.error("Failed to load product:", err);
+  }
+}
 
-      (this as any).OPEN_CART();
-    },
+function handleBuyNow(payload: { product: Product; quantity: number }) {
+  cartStore.addToCart(payload.product, payload.quantity);
+  cartStore.openCart();
+}
 
-    handleBuyNow(payload: { product: Product; quantity: number }): void {
-      (this as any).addToCart({
-        product: payload.product,
-        quantity: payload.quantity,
-      });
+function retryLoad() {
+  loadProduct();
+}
 
-      (this as any).OPEN_CART();
-    },
+// Lifecycle
+onMounted(() => {
+  loadProduct();
+});
 
-    retryLoad(): void {
-      (this as any).loadProduct();
-    },
-  },
-  mounted() {
-    (this as any).loadProduct();
-  },
-  beforeDestroy() {
-    (this as any).clearCurrentProduct();
-  },
-};
+onBeforeUnmount(() => {
+  productsStore.clearCurrentProduct();
+});
 </script>
 
 <style lang="scss" scoped>

@@ -33,119 +33,86 @@
   </div>
 </template>
 
-<script lang="ts">
-import promotionImg from "@/assets/images/promotion.svg";
-import AppleLogo from "@/assets/icons/apple-logo-icon.svg";
+<script setup lang="ts">
+import { ref, computed, onMounted } from "vue";
+import { storeToRefs } from "pinia";
+import { useProductsStore } from "@/stores/useProductStore";
+import { formatCategoryName } from "@/utils/stringUtils";
+import { PROMOTIONS } from "@/constants/promotions";
 import { TRUST_BADGES } from "@/constants/trustBadges";
+import { FLASH_SALES_COUNT, EXPLORE_PRODUCTS_COUNT, MAX_CATEGORIES } from "@/constants/products";
 import PromotionCarousel from "@/components/promotions/PromotionCarousel.vue";
 import FlashSales from "@/components/home/FlashSales.vue";
 import ProductCategories from "@/components/product/ProductCategories.vue";
 import ExploreProducts from "@/components/home/ExploreProducts.vue";
 import TrustBadge from "@/components/common/TrustBadge.vue";
-import { mapGetters, mapActions } from "vuex";
-import { formatCategoryName } from "@/utils/stringUtils";
-import { Product } from "@/types/product";
-import { PROMOTIONS } from "@/constants/promotions";
-import { FLASH_SALES_COUNT, EXPLORE_PRODUCTS_COUNT, MAX_CATEGORIES } from "@/constants/products";
 
+// Store
+const productsStore = useProductsStore();
+const { allProducts, categories } = storeToRefs(productsStore);
+const { fetchProducts, fetchCategories } = productsStore;
 
-type HomeViewInstance = {
-  randomFlashSales: Product[];
-  error: string | null;
-  allProducts: Product[];
-  categories: string[];
-  fetchProducts: () => Promise<void>;
-  fetchCategories: () => Promise<void>;
-  loadHomeData: () => Promise<void>;
-  shuffleArray: <T>(array: T[]) => T[];
-};
+// Local state
+const randomFlashSales = ref<any[]>([]);
+const error = ref<string | null>(null);
+const promotionList = ref(PROMOTIONS);
+const badges = ref(TRUST_BADGES);
 
-export default {
-  name: "HomeView",
-  components: {
-    PromotionCarousel,
-    FlashSales,
-    ProductCategories,
-    ExploreProducts,
-    TrustBadge,
-  },
-  data() {
-    return {
-      promotionImg,
-      AppleLogo,
-      promotionList:PROMOTIONS,
-      badges: TRUST_BADGES,
-      randomFlashSales: [] as Product[],
-      error: null as string | null,
-    };
-  },
-  computed: {
-    ...mapGetters("products", ["allProducts", "categories"]),
+// Computed
+const categoryList = computed(() => {
+  if (!categories.value?.length) {
+    return [
+      "Electronics",
+      "Fashion",
+      "Home & Garden",
+      "Sports",
+      "Toys",
+      "Beauty",
+    ];
+  }
+  return categories.value
+    .slice(0, MAX_CATEGORIES)
+    .map((category: string) => formatCategoryName(category));
+});
 
-    categoryList(): string[] {
-      const vm = this as unknown as HomeViewInstance;
-      if (!vm.categories?.length) {
-        return [
-          "Electronics",
-          "Fashion",
-          "Home & Garden",
-          "Sports",
-          "Toys",
-          "Beauty",
-        ];
-      }
-      return vm.categories
-        .slice(0, MAX_CATEGORIES)
-        .map((category: string) => formatCategoryName(category));
-    },
+const randomFlashSalesProducts = computed(() => randomFlashSales.value);
 
-    randomFlashSalesProducts(): Product[] {
-      const vm = this as unknown as HomeViewInstance;
-      return vm.randomFlashSales;
-    },
+const exploreProducts = computed(() => {
+  if (!allProducts.value?.length) return [];
+  return allProducts.value.slice(0, EXPLORE_PRODUCTS_COUNT);
+});
 
-    exploreProducts(): Product[] {
-      const vm = this as unknown as HomeViewInstance;
-      if (!vm.allProducts?.length) return [];
-      return vm.allProducts.slice(0, EXPLORE_PRODUCTS_COUNT);
-    },
-  },
-  methods: {
-    ...mapActions("products", ["fetchProducts", "fetchCategories"]),
+// Methods
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
 
-    shuffleArray<T>(array: T[]): T[] {
-      const shuffled = [...array];
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-      }
-      return shuffled;
-    },
+async function loadHomeData(): Promise<void> {
+  error.value = null;
 
-    async loadHomeData(): Promise<void> {
-      const vm = this as unknown as HomeViewInstance;
-      vm.error = null;
+  try {
+    await Promise.all([fetchCategories(), fetchProducts()]);
 
-      try {
-        await Promise.all([vm.fetchCategories(), vm.fetchProducts()]);
+    // Randomize flash sales after products are loaded
+    if (allProducts.value?.length) {
+      randomFlashSales.value = shuffleArray([...allProducts.value])
+        .slice(0, FLASH_SALES_COUNT);
+    }
+  } catch (err: any) {
+    error.value = err.message || "Failed to load home data";
+    console.error("Failed to load home data:", err);
+  }
+}
 
-        // Randomize flash sales after products are loaded
-        if (vm.allProducts?.length) {
-          vm.randomFlashSales = vm
-            .shuffleArray([...vm.allProducts])
-            .slice(0, FLASH_SALES_COUNT);
-        }
-      } catch (error: any) {
-        vm.error = error.message || "Failed to load home data";
-        console.error("Failed to load home data:", error);
-      }
-    },
-  },
-  mounted(): void {
-    const vm = this as unknown as HomeViewInstance;
-    vm.loadHomeData();
-  },
-};
+// Lifecycle
+onMounted(() => {
+  loadHomeData();
+});
 </script>
 
 <style lang="scss" scoped>
