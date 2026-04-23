@@ -37,7 +37,6 @@ export const useCartStore = defineStore('cart', {
     },
     
     isLoading: (state): boolean => state.loading,
-    error: (state): string | null => state.error,
     
     // Shipping-related getters using subtotal
     qualifiesForFreeShipping(): boolean {
