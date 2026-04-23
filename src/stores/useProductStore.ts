@@ -7,6 +7,9 @@ import {
   ProductsState,
 } from "@/types/product";
 
+const DEFAULT_PAGE_SIZE = 20;
+const MAX_LOAD_ALL_PAGES = 5;
+
 function hasActiveFilters(filters: ProductFilters): boolean {
   const values = [filters.q, filters.category, filters.sortBy, filters.order];
   return values.some((value) => value !== null && value !== "");
@@ -36,7 +39,7 @@ export const useProductsStore = defineStore("products", {
     currentProduct: null,
     pagination: {
       skip: 0,
-      limit: 20,
+      limit: DEFAULT_PAGE_SIZE,
       total: 0,
       hasMore: true,
     },
@@ -53,8 +56,6 @@ export const useProductsStore = defineStore("products", {
 
   getters: {
     allProducts: (state): Product[] => state.items,
-    currentProduct: (state): Product | null => state.currentProduct,
-    error: (state): string | null => state.error,
     isLoading: (state): boolean => state.loading,
     hasMore: (state): boolean => state.pagination.hasMore,
     totalProducts: (state): number => state.pagination.total,
@@ -69,7 +70,6 @@ export const useProductsStore = defineStore("products", {
       getActiveFilters(state.filters),
     hasActiveFilters: (state): boolean => hasActiveFilters(state.filters),
     activeFiltersCount: (state): number => getActiveFiltersCount(state.filters),
-    categories: (state): string[] => state.categories,
   },
 
   actions: {
@@ -81,13 +81,11 @@ export const useProductsStore = defineStore("products", {
       this.error = null;
 
       try {
-        // Build filters object for the service
         const filters: ProductFilters = {
           limit: this.pagination.limit,
           skip: this.pagination.skip,
         };
 
-        // Add active filters only if they have values
         if (this.filters.q) filters.q = this.filters.q;
         if (this.filters.category) filters.category = this.filters.category;
         if (this.filters.sortBy) filters.sortBy = this.filters.sortBy;
@@ -95,12 +93,15 @@ export const useProductsStore = defineStore("products", {
 
         const response = await productService.getProducts(filters);
 
-        this.items = [...this.items, ...response.products];
-        this.pagination.total = response.total;
-        this.pagination.skip = this.pagination.skip + response.products.length;
-        this.pagination.hasMore = this.items.length < response.total;
+        const products = response?.products ?? [];
+        const total = response?.total ?? 0;
 
-        return response.products;
+        this.items = [...this.items, ...products];
+        this.pagination.total = total;
+        this.pagination.skip = this.pagination.skip + products.length;
+        this.pagination.hasMore = this.items.length < total;
+
+        return products;
       } catch (error: any) {
         this.error = error.message || "Failed to load products";
         console.error("Error loading products:", error);
@@ -133,18 +134,21 @@ export const useProductsStore = defineStore("products", {
     },
 
     async fetchCategories() {
-      if (this.categories.length > 0) return this.categories;
+      if (this.categories && this.categories.length > 0) return this.categories;
 
       this.loading = true;
       this.error = null;
 
       try {
         const categories = await productService.getCategoryList();
-        this.categories = categories;
-        return categories;
+
+        this.categories = Array.isArray(categories) ? categories : [];
+        return this.categories;
       } catch (error: any) {
         this.error = error.message || "Failed to fetch categories";
         console.error("Error fetching categories:", error);
+
+        this.categories = [];
         throw error;
       } finally {
         this.loading = false;
@@ -280,7 +284,7 @@ export const useProductsStore = defineStore("products", {
       }
     },
 
-    async loadAllProducts(maxPages = 5) {
+    async loadAllProducts(maxPages = MAX_LOAD_ALL_PAGES) {
       const products: Product[] = [];
       let pagesLoaded = 0;
 
