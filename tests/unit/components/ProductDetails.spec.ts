@@ -2,17 +2,22 @@ import { mount } from '@vue/test-utils';
 import ProductDetails from '@/components/product/ProductDetails.vue';
 import { mockProduct } from '../../mocks/productMock';
 
+// Mock BaseButton
+jest.mock('@/components/ui/BaseButton.vue', () => ({
+  default: { template: '<button><slot /></button>' },
+}));
+
 describe('ProductDetails.vue', () => {
   let wrapper: any;
 
   beforeEach(() => {
-    wrapper = mount(ProductDetails as any, {
-      propsData: { product: mockProduct }
+    wrapper = mount(ProductDetails, {
+      props: { product: mockProduct },
     });
   });
 
   afterEach(() => {
-    if (wrapper) wrapper.destroy();
+    if (wrapper) wrapper.unmount();
   });
 
   it('computes sale price correctly with discount', () => {

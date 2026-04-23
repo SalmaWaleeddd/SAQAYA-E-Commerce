@@ -1,15 +1,15 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import BaseButton from '@/components/ui/BaseButton.vue';
 
 describe('BaseButton.vue', () => {
   let wrapper: any;
 
   beforeEach(() => {
-    wrapper = shallowMount(BaseButton);
+    wrapper = mount(BaseButton);
   });
 
   afterEach(() => {
-    if (wrapper) wrapper.destroy();
+    if (wrapper) wrapper.unmount();
   });
 
   describe('Rendering', () => {

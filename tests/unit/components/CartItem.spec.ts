@@ -6,13 +6,13 @@ describe('CartItem.vue', () => {
   let wrapper: any;
 
   beforeEach(() => {
-    wrapper = mount(CartItem as any, {
-      propsData: { item: mockCartItem }
+    wrapper = mount(CartItem, {
+      props: { item: mockCartItem }
     });
   });
 
   afterEach(() => {
-    if (wrapper) wrapper.destroy();
+    if (wrapper) wrapper.unmount();
   });
 
   it('displays product title correctly', () => {
@@ -41,7 +41,7 @@ describe('CartItem.vue', () => {
     const itemWithQuantity1 = { ...mockCartItem, quantity: 1 };
     await wrapper.setProps({ item: itemWithQuantity1 });
     const decrementBtn = wrapper.findAll('.cart-item__quantity-btn').at(1);
-    expect(decrementBtn.attributes('disabled')).toBe('disabled');
+    expect(decrementBtn.attributes('disabled')).toBeDefined();
   });
 
   it('remove button emits remove event', async () => {

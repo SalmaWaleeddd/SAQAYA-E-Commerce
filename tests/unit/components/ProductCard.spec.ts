@@ -1,18 +1,28 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import ProductCard from '@/components/product/ProductCard.vue';
 import { mockProduct } from '../../mocks/productMock';
+
+// Mock BaseButton
+jest.mock('@/components/ui/BaseButton.vue', () => ({
+  default: { template: '<button><slot /></button>' },
+}));
 
 describe('ProductCard.vue', () => {
   let wrapper: any;
 
   beforeEach(() => {
-    wrapper = shallowMount(ProductCard as any, {
-      propsData: { product: mockProduct }
+    wrapper = mount(ProductCard, {
+      props: { product: mockProduct },
+      global: {
+        stubs: {
+          'router-link': { template: '<a><slot /></a>' },
+        },
+      },
     });
   });
 
   afterEach(() => {
-    if (wrapper) wrapper.destroy();
+    if (wrapper) wrapper.unmount();
   });
 
   it('displays product title correctly', () => {
@@ -36,7 +46,8 @@ describe('ProductCard.vue', () => {
   });
 
   it('emits add-to-cart event when button clicked', async () => {
-    await wrapper.vm.handleAddToCart();
+    const button = wrapper.find('.product-card__img-container__add-to-cart');
+    await button.trigger('click');
     expect(wrapper.emitted('add-to-cart')).toBeTruthy();
     expect(wrapper.emitted('add-to-cart')[0][0]).toEqual(mockProduct);
   });
